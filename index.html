@@ -1,1 +1,358 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Różaniec — interaktywnie (Nowenna-layout)</title>
+<style>
+  :root{
+    --bg:#f3f6ff; --panel:#ffffff; --panel-2:#eef2ff; --text:#0e1533; --muted:#6370a0;
+    --accent:#2450ff; --accent-2:#6ea8ff; --ring:#2450ff22; --soft:#e8edff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6;
+      --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,var(--bg),#fff0)}
+  .wrap{max-width:900px;margin:0 auto;padding:16px}
+  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .title{font-weight:800;font-size:clamp(18px,3.4vw,26px)}
+  .slash{opacity:.35}
+  .mini{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .pill{background:var(--soft);border:1px solid var(--ring);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:13px}
+  .btnlink{border:1px solid var(--ring);background:var(--panel);padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+  .panel{margin-top:12px;background:var(--panel);border:1px solid var(--ring);border-radius:14px;padding:14px}
+  .muted{color:var(--muted)}
+  .hr{height:1px;background:var(--ring);margin:8px 0}
+  .indicators{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .indicator{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 12px;font-weight:700}
+  .progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden}
+  .progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
+  .content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;margin-top:10px;min-height:210px}
+  .content h3{margin:0 0 6px;font-size:18px}
+  .prayer{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:8px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .space{flex:1}
+  .bigbtn{font-size:16px;font-weight:800;letter-spacing:.2px;background:var(--panel);border:1px solid var(--ring);border-radius:12px;padding:10px 14px;cursor:pointer}
+  .bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
+  .bigbtn:disabled{opacity:.6;cursor:not-allowed}
+  .hide{display:none!important}
+  .startline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--panel-2);border:1px solid var(--ring);padding:2px 6px;border-radius:6px}
+  input[type="text"]{padding:10px 12px;border-radius:10px;border:1px solid var(--ring);background:var(--panel-2);outline:none}
+  input[type="checkbox"]{width:16px;height:16px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700}
+  .chip.active{outline:2px solid var(--accent-2);background:var(--soft)}
+  .chip.suggest{box-shadow:0 0 0 3px var(--ring),0 0 0 6px #52a0ff33}
+  footer{margin:14px 0 6px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
 
+  <div class="topbar">
+    <div class="title">Różaniec — interaktywnie</div>
+    <div class="slash">/</div>
+    <div class="mini">
+      <button id="btnStartInline" class="btnlink" title="Skrót: i">Start (i)</button>
+      <span class="pill" id="modeInfo">Tryb: standard</span>
+    </div>
+  </div>
+
+  <div id="startPanel" class="panel">
+    <div class="startline">
+      <span class="muted">Wybierz część różańca lub użyj „dzisiejszej”. Skróty: <span class="kbd">i</span> start, <span class="kbd">Enter</span> start.</span>
+    </div>
+    <div class="hr"></div>
+    <div class="row">
+      <label class="muted" for="name">Imię (opcjonalnie):</label>
+      <input id="name" type="text" placeholder="np. Ramzi" />
+      <span class="space"></span>
+      <label class="row" style="gap:6px"><input id="autoToday" type="checkbox" checked /> <span><b>Podążaj za dniem tygodnia</b></span></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="chips" id="chips">
+        <div class="chip" data-part="radosne">Radosne (pon/sob)</div>
+        <div class="chip" data-part="bolesne">Bolesne (wt/pt)</div>
+        <div class="chip" data-part="swiatla">Światła (czw)</div>
+        <div class="chip" data-part="chwalebne">Chwalebne (śr/nd)</div>
+      </div>
+      <span class="space"></span>
+      <span class="pill" id="todayBadge">Dziś: —</span>
+      <button id="applyToday" class="btnlink">Ustaw dzisiejszą część</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button id="startBtn" class="bigbtn primary">Start</button>
+      <button id="resumeBtn" class="bigbtn">Wznów ostatnie</button>
+      <button id="resetAll" class="bigbtn">Wyczyść zapis</button>
+    </div>
+  </div>
+
+  <div id="readPanel" class="panel hide">
+    <div class="indicators">
+      <div class="indicator" id="indPart">Część —</div>
+      <div class="indicator" id="indStep">Krok –/–</div>
+      <span class="space"></span>
+      <div class="pill" id="indUser">Użytkownik: —</div>
+    </div>
+
+    <div class="progress" style="margin:10px 0 8px"><div id="bar"></div></div>
+
+    <div class="content">
+      <h3 id="stepTitle">Tytuł</h3>
+      <div id="stepBody" class="muted"></div>
+      <div id="stepPrayer" class="prayer hide"></div>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <button id="prevBtn" class="bigbtn" title="←">⟵ Wstecz</button>
+      <button id="nextBtn" class="bigbtn primary" title="→">Dalej ⟶</button>
+      <button id="finishBtn" class="bigbtn hide">Zakończ część</button>
+      <span class="space"></span>
+      <button id="resetPart" class="bigbtn">Reset części</button>
+      <button id="backToStart" class="bigbtn">Wróć</button>
+    </div>
+  </div>
+
+  <footer>Różaniec — cztery części. ✝️ © 2025 drogawiary@wp.pl</footer>
+</div>
+
+<script>
+(function(){
+  /* ---- Mapa dnia tygodnia (Europe/Warsaw) ---- */
+  const DAY_TO_PART = { 0:"chwalebne", 1:"radosne", 2:"bolesne", 3:"chwalebne", 4:"swiatla", 5:"bolesne", 6:"radosne" };
+  const DAY_LABEL = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
+  const PART_NAME = {
+    radosne:"Tajemnice Radosne",
+    bolesne:"Tajemnice Bolesne",
+    swiatla:"Tajemnice Światła",
+    chwalebne:"Tajemnice Chwalebne"
+  };
+
+  /* ---- Rozważania (Twoje) ---- */
+  const CONTENT = {/* ——— [ZOSTAWIONE 1:1, skrócone dla czytelności w tej sekcji podglądu] ——— */
+    radosne:{name:PART_NAME.radosne,
+      intro:{title:"Wstęp",body:`Bóg przychodzi w zwyczajności: w rozmowie, w pracy, przy stole.
+Jeśli otworzysz serce, odkryjesz, że największe rzeczy rodzą się w posłuszeństwie.
+Nie trzeba być idealnym — trzeba być prawdziwym i gotowym powiedzieć „tak”.`},
+      items:[
+        {title:"I – Zwiastowanie",body:`Maryja nie planowała cudu — słuchała. W świecie kontrolowania wszystkiego,
+Ona uczy zgody na Boży plan, który przewyższa nasze kalkulacje.`,prayer:`Maryjo, naucz mnie mówić „tak” Bogu, zanim zrozumiem „dlaczego”.`},
+        {title:"II – Nawiedzenie",body:`Radość dojrzewa w drodze do drugiego człowieka. Maryja nie czeka na idealne warunki — idzie pomagać.`,prayer:`Uczyń moje serce uważnym, bym nie odkładał dobra na później.`},
+        {title:"III – Narodzenie",body:`Bóg rodzi się w miejscach, które świat omija. W prostocie jest Jego moc.`,prayer:`Jezu, narodź się na nowo w moim domu i w moich decyzjach.`},
+        {title:"IV – Ofiarowanie",body:`Miłość nie zatrzymuje — oddaje. Ofiarowanie to zaufanie, że Bóg zrobi z tego więcej.`,prayer:`Przyjmij, Panie, to, co kocham — i uczyń z tego błogosławieństwo.`},
+        {title:"V – Odnalezienie",body:`Maryja i Józef szukali Jezusa tylko trzy dni. My gubimy Go nieraz na lata: w pośpiechu,
+lęku, hałasie. A On jest w świątyni Ojca — tam czeka.`,prayer:`Gdy Cię gubię, Jezu, przyprowadź mnie do domu Ojca.`}
+      ],
+      outro:{title:"Zakończenie",body:`Radość nie jest uczuciem, ale owocem zaufania. Kto wierzy w codzienności,
+ten znajdzie Boga nawet w najciemniejszym zaułku dnia.`}
+    },
+    bolesne:{name:PART_NAME.bolesne,
+      intro:{title:"Wstęp",body:`Różaniec to nie modlitwa wygody. Klęknij. Poczuj choć odrobinę ciężaru,
+który On wziął na siebie. Każda modlitwa niech ma cenę: czas, uwagę, kolana — ofiarę, nie wygodę.
+Wtedy ból staje się modlitwą.`},
+      items:[
+        {title:"I – Modlitwa w Ogrójcu",body:`Jezus dźwiga ciężar wszystkich grzechów. Nasza zdrada zaczyna się, gdy „odkładamy” Boga.`,prayer:`Daj mi czuwać, gdy serce chce spać.`},
+        {title:"II – Biczowanie",body:`Świadomy grzech jest ciosem w Ciebie: obmowa, nieczystość, pogarda. A Ty milczysz i kochasz.`,prayer:`Przebacz, Panie. Ulecz to, czym Cię ranię.`},
+        {title:"III – Cierniem ukoronowanie",body:`Świat szydzi z wiary, Ty królujesz pokorną miłością.`,prayer:`Jezu, daj mi odwagę być Twój, bez wstydu.`},
+        {title:"IV – Dźwiganie krzyża",body:`Uciekamy od trudów, a Ty uczysz, że sens rodzi się w wierności.`,prayer:`Naucz mnie nieść mój krzyż bez narzekania.`},
+        {title:"V – Ukrzyżowanie",body:`Każdy mój grzech to gwóźdź. A Ty wciąż mówisz: „Ojcze, przebacz im”.`,prayer:`Jezu Ukrzyżowany, uczyń moje serce posłuszne Twojej miłości.`}
+      ],
+      outro:{title:"Zakończenie",body:`Każdy ból ma sens, jeśli jest przeżywany z Bogiem. Ojciec zna ból — patrzył na krzyż Syna.
+Ale ból miłosierny rodzi zwycięstwo. Krzyż dziś — jutro zmartwychwstanie.`}
+    },
+    swiatla:{name:PART_NAME.swiatla,
+      intro:{title:"Wstęp",body:`Jezus zostawił znaki: Słowo, sakramenty, Kościół. Otwieraj się codziennie:
+krótki fragment Ewangelii, kazanie z rekolekcji, rolka ze Słowem Bożym od kapłana.
+Szukaj Boga — a znajdziesz Drogę.`},
+      items:[
+        {title:"I – Chrzest w Jordanie",body:`Bóg wchodzi w naszą wodę. Chrzest to nie wspomnienie — tożsamość.`,prayer:`Odnów we mnie łaskę chrztu.`},
+        {title:"II – Cud w Kanie",body:`„Zróbcie wszystko, cokolwiek wam powie.” Cud zaczyna się od posłuszeństwa.`,prayer:`Maryjo, naucz mnie słuchać i wykonać.`},
+        {title:"III – Głoszenie Królestwa",body:`Słowo budzi sumienie. Nawrócenie zaczyna się, gdy przestaję udawać.`,prayer:`Niech Twoje Słowo stanie się czynem.`},
+        {title:"IV – Przemienienie",body:`Światło na Taborze jest po to, by iść w dół — do ludzi.`,prayer:`Daj mi nieść Twoje światło w codzienności.`},
+        {title:"V – Ustanowienie Eucharystii",body:`Największy cud dzieje się cicho na ołtarzu. On czeka.`,prayer:`Jezu, spraw, abym żył Eucharystią, nie tylko w niej uczestniczył.`}
+      ],
+      outro:{title:"Zakończenie",body:`Świat ma dużo hałasu, mało słuchania. Kto codziennie otwiera serce na naukę Jezusa,
+staje się lampą, która nie gaśnie na wietrze.`}
+    },
+    chwalebne:{name:PART_NAME.chwalebne,
+      intro:{title:"Wstęp",body:`Każda niedziela to mała Pascha — zwycięstwo życia nad śmiercią.
+Nie tylko w historii, ale dziś, gdy człowiek powstaje z grzechu i zaczyna od nowa.
+Bóg nie chce smutnych uczniów, lecz ludzi nadziei.`},
+      items:[
+        {title:"I – Zmartwychwstanie",body:`Jezus wyprowadza z grobu lęku, nałogu, rozpaczy. Świat potrzebuje ludzi,
+którzy wierzą, że śmierć nie ma ostatniego słowa.`,prayer:`Jezu Zmartwychwstały, naucz mnie żyć Twoim życiem.`},
+        {title:"II – Wniebowstąpienie",body:`Niebo to dom. Nie szukaj sensu w opiniach i karierze — cel jest wyżej.`,prayer:`Panie, oderwij mnie od tego, co przemija.`},
+        {title:"III – Zesłanie Ducha Świętego",body:`Duch daje odwagę, prawdę i pokój w świecie krzyku.`,prayer:`Duchu Święty, odnów mnie.`},
+        {title:"IV – Wniebowzięcie Maryi",body:`Bóg pamięta o wierności. Prostota prowadzi do chwały.`,prayer:`Maryjo, naucz mnie cichej wierności.`},
+        {title:"V – Ukoronowanie Maryi",body:`Korona dla Służebnicy. Wielkość to służba.`,prayer:`Królowo, naucz mnie kochać czynem.`}
+      ],
+      outro:{title:"Zakończenie",body:`Miłość ma ostatnie słowo. Każdy krzyż niesiony z Bogiem kończy się zmartwychwstaniem.
+Idź i nieś tę nadzieję.`}
+    }
+  };
+
+  /* ---- UI ---- */
+  const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
+  const startPanel=qs("#startPanel"), readPanel=qs("#readPanel");
+  const btnStartInline=qs("#btnStartInline"), modeInfo=qs("#modeInfo");
+  const nameInp=qs("#name"), autoToday=qs("#autoToday"), chips=qs("#chips"), todayBadge=qs("#todayBadge"), applyToday=qs("#applyToday");
+  const startBtn=qs("#startBtn"), resumeBtn=qs("#resumeBtn"), resetAll=qs("#resetAll");
+  const indPart=qs("#indPart"), indStep=qs("#indStep"), indUser=qs("#indUser"), bar=qs("#bar");
+  const stepTitle=qs("#stepTitle"), stepBody=qs("#stepBody"), stepPrayer=qs("#stepPrayer");
+  const prevBtn=qs("#prevBtn"), nextBtn=qs("#nextBtn"), finishBtn=qs("#finishBtn"), resetPart=qs("#resetPart"), backToStart=qs("#backToStart");
+
+  /* ---- Stan + storage ---- */
+  const PARTS=["radosne","bolesne","swiatla","chwalebne"];
+  const S={ name:"rozaniec:name", lastPart:"rozaniec:lastPart", step:"rozaniec:step:", auto:"rozaniec:autoToday" };
+  let currentPart=null, step=0;
+
+  /* ---- Helpers ---- */
+  function weekdayPL(){
+    // stabilnie z Europe/Warsaw bez parsowania stringów
+    const w = new Intl.DateTimeFormat('pl-PL',{weekday:'long', timeZone:'Europe/Warsaw'}).format(new Date());
+    const idx = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"].indexOf(w.toLowerCase());
+    return {dow: idx<0? (new Date()).getDay():idx, label: DAY_LABEL[idx<0? (new Date()).getDay():idx]};
+  }
+  function todays(){
+    const {dow,label}=weekdayPL();
+    return {dow,label,part:DAY_TO_PART[dow]};
+  }
+  function totalSteps(){ return 7 } // intro + 5 + outro
+  function keyPart(p){ return S.step+p }
+  function save(){
+    localStorage.setItem(S.name,(nameInp.value||"").trim());
+    localStorage.setItem(S.auto, autoToday.checked?"1":"0");
+    if(currentPart){
+      localStorage.setItem(S.lastPart, currentPart);
+      localStorage.setItem(keyPart(currentPart), String(step));
+    }
+  }
+  function loadName(){ const v=localStorage.getItem(S.name); if(v) nameInp.value=v }
+  function savedStep(p){ const v=parseInt(localStorage.getItem(keyPart(p)),10); return Number.isFinite(v)? Math.min(Math.max(v,0), totalSteps()-1):0 }
+  function setActiveChip(p){
+    qsa(".chip").forEach(c=>{
+      c.classList.toggle("active", c.dataset.part===p);
+      c.classList.toggle("suggest", c.dataset.part===todays().part);
+    });
+  }
+  function renderToday(){
+    const t=todays(); todayBadge.textContent=`Dziś: ${t.label} — sugerowane: ${PART_NAME[t.part]}`;
+    setActiveChip(currentPart||t.part);
+  }
+  function showStart(){ startPanel.classList.remove("hide"); readPanel.classList.add("hide") }
+  function showRead(){ readPanel.classList.remove("hide"); startPanel.classList.add("hide") }
+  function esc(s){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])) }
+
+  function renderStep(){
+    const d=CONTENT[currentPart]; const max=totalSteps();
+    let t,b,pr=null;
+    if(step===0){ t=d.intro.title; b=d.intro.body }
+    else if(step===max-1){ t=d.outro.title; b=d.outro.body }
+    else { const it=d.items[step-1]; t=it.title; b=it.body; pr=it.prayer||null }
+    stepTitle.textContent=t;
+    stepBody.innerHTML=`<p style="margin:0;line-height:1.6">${esc(b)}</p>`;
+    if(pr){ stepPrayer.classList.remove("hide"); stepPrayer.innerHTML=`<b>Modlitwa:</b> ${esc(pr)}` } else { stepPrayer.classList.add("hide"); stepPrayer.textContent="" }
+
+    indPart.textContent=`Część: ${d.name}`;
+    indStep.textContent=`Krok ${step+1}/${max}`;
+    indUser.textContent=`Użytkownik: ${(nameInp.value||localStorage.getItem(S.name)||"—").trim()||"—"}`;
+
+    bar.style.width = Math.round(step/(max-1)*100) + "%";
+    prevBtn.disabled = step===0;
+    nextBtn.classList.toggle("hide", step===max-1);
+    finishBtn.classList.toggle("hide", step!==max-1);
+    save();
+  }
+
+  /* ---- Zdarzenia ---- */
+  chips.addEventListener("click", e=>{
+    const chip=e.target.closest(".chip"); if(!chip) return;
+    currentPart = chip.dataset.part; setActiveChip(currentPart);
+  });
+
+  autoToday.addEventListener("change", ()=>{
+    save();
+    modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: ręczny";
+  });
+
+  applyToday.addEventListener("click", ()=>{
+    const t=todays(); currentPart=t.part; setActiveChip(currentPart);
+  });
+
+  // live-save imienia
+  nameInp.addEventListener("input", save);
+
+  startBtn.addEventListener("click", ()=>{
+    if(autoToday.checked && !currentPart){ currentPart = todays().part }
+    if(!currentPart) currentPart="radosne";
+    step = savedStep(currentPart);
+    setActiveChip(currentPart); showRead(); renderStep();
+  });
+
+  resumeBtn.addEventListener("click", ()=>{
+    const last = localStorage.getItem(S.lastPart);
+    currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : "radosne");
+    step = savedStep(currentPart);
+    setActiveChip(currentPart); showRead(); renderStep();
+  });
+
+  resetAll.addEventListener("click", ()=>{
+    if(!confirm("Wyczyszczać wszystkie zapisy (imię, ostatnia część, kroki, tryb)?")) return;
+    localStorage.removeItem(S.name);
+    localStorage.removeItem(S.lastPart);
+    localStorage.removeItem(S.auto);
+    PARTS.forEach(p=>localStorage.removeItem(keyPart(p)));
+    nameInp.value="";
+    autoToday.checked=true;
+    renderToday();
+    alert("Wyczyszczono zapis.");
+  });
+
+  btnStartInline.addEventListener("click", ()=>{ startBtn.click() });
+
+  backToStart.addEventListener("click", ()=>{ save(); showStart() });
+  prevBtn.addEventListener("click", ()=>{ step=Math.max(0,step-1); renderStep() });
+  nextBtn.addEventListener("click", ()=>{ step=Math.min(totalSteps()-1,step+1); renderStep() });
+  finishBtn.addEventListener("click", ()=>{
+    alert("Zakończono tę część różańca.");
+    showStart();
+    renderToday();
+  });
+
+  resetPart.addEventListener("click", ()=>{
+    if(!confirm("Zresetować postęp tej części?")) return;
+    step=0; save(); renderStep();
+  });
+
+  // skróty klawiaturowe: i / Enter / strzałki
+  document.addEventListener("keydown", (e)=>{
+    if(e.key==="i" || e.key==="I"){
+      if(!readPanel || readPanel.classList.contains("hide")) startBtn.click();
+    }else if(e.key==="Enter"){
+      if(!readPanel || readPanel.classList.contains("hide")) startBtn.click();
+    }else if(e.key==="ArrowRight"){
+      if(!readPanel.classList.contains("hide")) {
+        if(!nextBtn.classList.contains("hide")) nextBtn.click(); else finishBtn.click();
+      }
+    }else if(e.key==="ArrowLeft"){
+      if(!readPanel.classList.contains("hide")) prevBtn.click();
+    }
+  });
+
+  /* ---- Init ---- */
+  loadName();
+  autoToday.checked = (localStorage.getItem(S.auto)||"1")==="1";
+  modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: ręczny";
+  renderToday();
+  const last=localStorage.getItem(S.lastPart);
+  currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : "radosne");
+  setActiveChip(currentPart);
+})();
+</script>
+</body>
+</html>
