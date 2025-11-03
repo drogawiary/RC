@@ -70,7 +70,7 @@
     </div>
     <div class="hr"></div>
     <div class="row">
-      <label class="row" style="gap:6px"><input id="autoToday" type="checkbox" checked /> <span><b>Podążaj za dniem tygodnia</b></span></label>
+      <input id="autoToday" type="checkbox" checked style="display:none" />
       <span class="space"></span>
       <span class="pill" id="todayBadge">Dziś: —</span>
       <button id="applyToday" class="btnlink">Ustaw dzisiejszą część</button>
@@ -235,7 +235,7 @@
       indStep.textContent=`Opis`;
       bar.style.width="0%";
       prevBtn.disabled=false; prevBtn.textContent="⟵ Wstecz";
-      nextBtn.classList.remove("hide"); finishBtn.classList.add("hide");
+      nextBtn.classList.add("hide"); finishBtn.classList.add("hide");
       return;
     }
     const d = CONTENT[currentPart]; const max=totalSteps(); let t,b;
@@ -266,7 +266,7 @@
   themeBtn?.addEventListener('click',()=>{ const isDark=document.documentElement.classList.contains('dark'); applyTheme(isDark? 'light':'dark'); });
 
   resetIfNewDay();
-  autoToday.checked = (localStorage.getItem(S.auto)||"1")==="1";
+  autoToday.checked = true; localStorage.setItem(S.auto,"1");
   modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard";
   const last=localStorage.getItem(S.lastPart);
   currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : "radosne");
