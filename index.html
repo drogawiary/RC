@@ -50,13 +50,34 @@
 
   @media (prefers-color-scheme: dark){ #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; } }
   .dark #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; }
+  /* Poprawiona widoczność przycisków w trybie nocnym */
+.dark .btnlink, 
+.dark .bigbtn {
+  color: #ffffff !important;
+  border-color: #6ea8ff !important;
+  background: #1a1f3a !important;
+}
+
+.dark #applyToday {
+  background: #1e2450 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 3px #3a55ff33, 0 0 12px #4f7fff66;
+  border-color: #6ea8ff !important;
+}
+
+.dark #opisBtn {
+  background: #1e2450 !important;
+  color: #ffffff !important;
+  border-color: #6ea8ff !important;
+  box-shadow: 0 0 8px #4f7fff55;
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="topbar">
     <div class="title">Różaniec</div>
-    <div class="slash">/</div>
     <div class="mini">
       <span class="pill" id="modeInfo">Tryb: standard</span>
       <button id="themeBtn" class="btnlink" title="Tryb dzień/noc">🌞/🌙</button>
