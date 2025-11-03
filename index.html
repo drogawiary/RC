@@ -6,29 +6,52 @@
 <title>Różaniec — interaktywnie (Nowenna-layout)</title>
 <style>
   :root{
-    --bg:#f3f6ff; --panel:#ffffff; --panel-2:#eef2ff; --text:#0e1533; --muted:#6370a0;
-    --accent:#2450ff; --accent-2:#6ea8ff; --ring:#2450ff22; --soft:#e8edff;
+    /* Paleta i proporcje na wzór Nowenny RW */
+    --bg:#f3f6ff;
+    --panel:#ffffff;
+    --panel-2:#eef2ff;
+    --text:#0e1533;
+    --muted:#6370a0;
+    --accent:#2450ff;      /* Maryjny niebieski */
+    --accent-2:#6ea8ff;
+    --ring:#2450ff22;
+    --soft:#e8edff;
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6;
-      --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a;
+      --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a;
+      --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a;
     }
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,var(--bg),#fff0)}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;
+    color:var(--text); background:linear-gradient(180deg,var(--bg),#fff0);
+  }
   .wrap{max-width:900px;margin:0 auto;padding:16px}
+  /* TOP BAR jak w nowennie: tytuł i proste linki/ikony */
   .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .title{font-weight:800;font-size:clamp(18px,3.4vw,26px)}
   .slash{opacity:.35}
   .mini{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .pill{background:var(--soft);border:1px solid var(--ring);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:13px}
-  .btnlink{border:1px solid var(--ring);background:var(--panel);padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700}
-  .panel{margin-top:12px;background:var(--panel);border:1px solid var(--ring);border-radius:14px;padding:14px}
+  .pill{
+    background:var(--soft); border:1px solid var(--ring); color:var(--muted);
+    padding:6px 10px; border-radius:999px; font-size:13px;
+  }
+  .btnlink{
+    border:1px solid var(--ring); background:var(--panel); padding:6px 10px; border-radius:10px;
+    cursor:pointer; font-weight:700;
+  }
+  .panel{
+    margin-top:12px; background:var(--panel); border:1px solid var(--ring); border-radius:14px; padding:14px;
+  }
   .muted{color:var(--muted)}
   .hr{height:1px;background:var(--ring);margin:8px 0}
+  /* Indykatory dnia/kroku jak „Dzień — / Krok —/—” */
   .indicators{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .indicator{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 12px;font-weight:700}
+  .indicator{
+    background:var(--panel-2); border:1px solid var(--ring); border-radius:10px; padding:8px 12px; font-weight:700;
+  }
   .progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden}
   .progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
   .content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;margin-top:10px;min-height:210px}
@@ -36,10 +59,14 @@
   .prayer{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:8px}
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .space{flex:1}
-  .bigbtn{font-size:16px;font-weight:800;letter-spacing:.2px;background:var(--panel);border:1px solid var(--ring);border-radius:12px;padding:10px 14px;cursor:pointer}
+  .bigbtn{
+    font-size:16px; font-weight:800; letter-spacing:.2px;
+    background:var(--panel); border:1px solid var(--ring); border-radius:12px; padding:10px 14px; cursor:pointer;
+  }
   .bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
   .bigbtn:disabled{opacity:.6;cursor:not-allowed}
   .hide{display:none!important}
+  /* mały start-panel (jak „Start (i) / Jesteś w trybie…”) */
   .startline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;background:var(--panel-2);border:1px solid var(--ring);padding:2px 6px;border-radius:6px}
   input[type="text"]{padding:10px 12px;border-radius:10px;border:1px solid var(--ring);background:var(--panel-2);outline:none}
@@ -54,18 +81,20 @@
 <body>
 <div class="wrap">
 
+  <!-- Górny pasek jak w Nowennie -->
   <div class="topbar">
     <div class="title">Różaniec — interaktywnie</div>
     <div class="slash">/</div>
     <div class="mini">
-      <button id="btnStartInline" class="btnlink" title="Skrót: i">Start (i)</button>
+      <button id="btnStartInline" class="btnlink">Start (i)</button>
       <span class="pill" id="modeInfo">Tryb: standard</span>
     </div>
   </div>
 
+  <!-- Panel startowy (zawsze widoczny na starcie, prosty jak w nowennie) -->
   <div id="startPanel" class="panel">
     <div class="startline">
-      <span class="muted">Wybierz część różańca lub użyj „dzisiejszej”. Skróty: <span class="kbd">i</span> start, <span class="kbd">Enter</span> start.</span>
+      <span class="muted">Jesteś w trybie wprowadzania — wybierz część różańca lub użyj „dzisiejszej”.</span>
     </div>
     <div class="hr"></div>
     <div class="row">
@@ -92,6 +121,7 @@
     </div>
   </div>
 
+  <!-- Panel główny czytania (layout jak w nowennie) -->
   <div id="readPanel" class="panel hide">
     <div class="indicators">
       <div class="indicator" id="indPart">Część —</div>
@@ -109,8 +139,8 @@
     </div>
 
     <div class="row" style="margin-top:10px">
-      <button id="prevBtn" class="bigbtn" title="←">⟵ Wstecz</button>
-      <button id="nextBtn" class="bigbtn primary" title="→">Dalej ⟶</button>
+      <button id="prevBtn" class="bigbtn">⟵ Wstecz</button>
+      <button id="nextBtn" class="bigbtn primary">Dalej ⟶</button>
       <button id="finishBtn" class="bigbtn hide">Zakończ część</button>
       <span class="space"></span>
       <button id="resetPart" class="bigbtn">Reset części</button>
@@ -118,12 +148,13 @@
     </div>
   </div>
 
+  <!-- Stopka jak w nowennie -->
   <footer>Różaniec — cztery części. ✝️ © 2025 drogawiary@wp.pl</footer>
 </div>
 
 <script>
 (function(){
-  /* ---- Mapa dnia tygodnia (Europe/Warsaw) ---- */
+  /* ---- MAPA dnia tygodnia (Europe/Warsaw) ---- */
   const DAY_TO_PART = { 0:"chwalebne", 1:"radosne", 2:"bolesne", 3:"chwalebne", 4:"swiatla", 5:"bolesne", 6:"radosne" };
   const DAY_LABEL = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
   const PART_NAME = {
@@ -133,8 +164,8 @@
     chwalebne:"Tajemnice Chwalebne"
   };
 
-  /* ---- Rozważania (Twoje) ---- */
-  const CONTENT = {/* ——— [ZOSTAWIONE 1:1, skrócone dla czytelności w tej sekcji podglądu] ——— */
+  /* ---- Rozważania (z wcześniejszych ustaleń) ---- */
+  const CONTENT = {
     radosne:{name:PART_NAME.radosne,
       intro:{title:"Wstęp",body:`Bóg przychodzi w zwyczajności: w rozmowie, w pracy, przy stole.
 Jeśli otworzysz serce, odkryjesz, że największe rzeczy rodzą się w posłuszeństwie.
@@ -196,7 +227,7 @@ Idź i nieś tę nadzieję.`}
     }
   };
 
-  /* ---- UI ---- */
+  /* ---- UI elementy ---- */
   const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
   const startPanel=qs("#startPanel"), readPanel=qs("#readPanel");
   const btnStartInline=qs("#btnStartInline"), modeInfo=qs("#modeInfo");
@@ -212,16 +243,8 @@ Idź i nieś tę nadzieję.`}
   let currentPart=null, step=0;
 
   /* ---- Helpers ---- */
-  function weekdayPL(){
-    // stabilnie z Europe/Warsaw bez parsowania stringów
-    const w = new Intl.DateTimeFormat('pl-PL',{weekday:'long', timeZone:'Europe/Warsaw'}).format(new Date());
-    const idx = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"].indexOf(w.toLowerCase());
-    return {dow: idx<0? (new Date()).getDay():idx, label: DAY_LABEL[idx<0? (new Date()).getDay():idx]};
-  }
-  function todays(){
-    const {dow,label}=weekdayPL();
-    return {dow,label,part:DAY_TO_PART[dow]};
-  }
+  function nowPL(){ const s=new Date().toLocaleString("en-GB",{timeZone:"Europe/Warsaw"}); return new Date(s) }
+  function todays(){ const d=nowPL(); const dow=d.getDay(); return {dow,label:DAY_LABEL[dow],part:DAY_TO_PART[dow]} }
   function totalSteps(){ return 7 } // intro + 5 + outro
   function keyPart(p){ return S.step+p }
   function save(){
@@ -275,17 +298,9 @@ Idź i nieś tę nadzieję.`}
     currentPart = chip.dataset.part; setActiveChip(currentPart);
   });
 
-  autoToday.addEventListener("change", ()=>{
-    save();
-    modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: ręczny";
-  });
+  autoToday.addEventListener("change", ()=>{ save(); modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: ręczny" });
 
-  applyToday.addEventListener("click", ()=>{
-    const t=todays(); currentPart=t.part; setActiveChip(currentPart);
-  });
-
-  // live-save imienia
-  nameInp.addEventListener("input", save);
+  applyToday.addEventListener("click", ()=>{ const t=todays(); currentPart=t.part; setActiveChip(currentPart) });
 
   startBtn.addEventListener("click", ()=>{
     if(autoToday.checked && !currentPart){ currentPart = todays().part }
@@ -302,15 +317,10 @@ Idź i nieś tę nadzieję.`}
   });
 
   resetAll.addEventListener("click", ()=>{
-    if(!confirm("Wyczyszczać wszystkie zapisy (imię, ostatnia część, kroki, tryb)?")) return;
-    localStorage.removeItem(S.name);
-    localStorage.removeItem(S.lastPart);
-    localStorage.removeItem(S.auto);
+    if(!confirm("Wyczyszczać wszystkie zapisy (imię, ostatnia część, kroki)?")) return;
+    localStorage.removeItem(S.name); localStorage.removeItem(S.lastPart);
     PARTS.forEach(p=>localStorage.removeItem(keyPart(p)));
-    nameInp.value="";
-    autoToday.checked=true;
-    renderToday();
-    alert("Wyczyszczono zapis.");
+    nameInp.value=""; alert("Wyczyszczono zapis.");
   });
 
   btnStartInline.addEventListener("click", ()=>{ startBtn.click() });
@@ -318,36 +328,17 @@ Idź i nieś tę nadzieję.`}
   backToStart.addEventListener("click", ()=>{ save(); showStart() });
   prevBtn.addEventListener("click", ()=>{ step=Math.max(0,step-1); renderStep() });
   nextBtn.addEventListener("click", ()=>{ step=Math.min(totalSteps()-1,step+1); renderStep() });
-  finishBtn.addEventListener("click", ()=>{
-    alert("Zakończono tę część różańca.");
-    showStart();
-    renderToday();
-  });
+  finishBtn.addEventListener("click", ()=>{ alert("Zakończono tę część różańca. Możesz wrócić i wybrać inną.") });
 
   resetPart.addEventListener("click", ()=>{
     if(!confirm("Zresetować postęp tej części?")) return;
     step=0; save(); renderStep();
   });
 
-  // skróty klawiaturowe: i / Enter / strzałki
-  document.addEventListener("keydown", (e)=>{
-    if(e.key==="i" || e.key==="I"){
-      if(!readPanel || readPanel.classList.contains("hide")) startBtn.click();
-    }else if(e.key==="Enter"){
-      if(!readPanel || readPanel.classList.contains("hide")) startBtn.click();
-    }else if(e.key==="ArrowRight"){
-      if(!readPanel.classList.contains("hide")) {
-        if(!nextBtn.classList.contains("hide")) nextBtn.click(); else finishBtn.click();
-      }
-    }else if(e.key==="ArrowLeft"){
-      if(!readPanel.classList.contains("hide")) prevBtn.click();
-    }
-  });
-
   /* ---- Init ---- */
   loadName();
   autoToday.checked = (localStorage.getItem(S.auto)||"1")==="1";
-  modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: ręczny";
+  modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard";
   renderToday();
   const last=localStorage.getItem(S.lastPart);
   currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : "radosne");
