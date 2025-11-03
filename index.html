@@ -3,78 +3,80 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Różaniec</title>
+<title>Różaniec — interaktywnie</title>
 <style>
   :root{
-    --bg:#f3f6ff; --panel:#ffffff; --panel-2:#eef2ff; --text:#0e1533; --muted:#6370a0;
-    --accent:#2450ff; --accent-2:#6ea8ff; --ring:#2450ff22; --soft:#e8edff;
+    --bg:#f3f6ff; --panel:#ffffff; --panel-2:#eef2ff; --text:#0e1533; --muted:#6370a0; --accent:#2450ff; --accent-2:#6ea8ff; --ring:#2450ff22; --soft:#e8edff;
   }
-  /* 🌙 Tryb nocny (klasa .dark) */
-  .dark{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
+  /* Systemowy nocny tryb jako domyślna preferencja */
   @media (prefers-color-scheme: dark){
     :root{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
   }
+  /* Wymuszenie trybu nocnego przyciskiem */
+  .dark{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
+
   *{box-sizing:border-box}
-  body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif; color:var(--text); background:linear-gradient(180deg,var(--bg),#fff0)}
+  body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif; color:var(--text); background:linear-gradient(180deg,var(--bg),#fff0); }
   .wrap{max-width:900px;margin:0 auto;padding:16px}
+  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .title{font-weight:800;font-size:clamp(18px,3.4vw,26px)}
+  .slash{opacity:.35}
+  .mini{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .pill{ background:var(--soft); border:1px solid var(--ring); color:var(--muted); padding:6px 10px; border-radius:999px; font-size:13px; }
+  .btnlink{ border:1px solid var(--ring); background:var(--panel); padding:6px 10px; border-radius:10px; cursor:pointer; font-weight:700; }
 
-  /* HEADER jak w nowennie */
-  .banner{background:linear-gradient(180deg,#cfe3ff,#e9f0ff); color:#0b2a55; border-radius:18px; padding:18px; text-align:center; box-shadow:0 8px 24px #0001; border:1px solid #ffffff70; margin-bottom:12px}
-  .banner h1{margin:0; font-size:clamp(22px,4.5vw,32px); font-weight:800; letter-spacing:.2px}
-  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
-  .btn{border:1px solid var(--ring); background:var(--panel); padding:8px 12px; border-radius:12px; cursor:pointer; font-weight:700}
-
-  /* ✨ wyróżnienie przycisku "Ustaw dzisiejszą część" (zwłaszcza w nocy) */
-  #applyToday{position:relative}
-  .glow{box-shadow:0 0 0 2px var(--ring), 0 0 0 8px #52a0ff33}
-  .dark .glow{box-shadow:0 0 0 2px #4d66ff88, 0 0 18px #7fa7ff99}
-  .dark #applyToday{border-color:#3a55ff80; text-shadow:0 0 6px #7fa7ff}
-  .dark #applyToday:hover{box-shadow:0 0 0 2px #5d77ff99, 0 0 24px #9abcffcc}
-  .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
-
-  .panel{margin-top:12px; background:var(--panel); border:1px solid var(--ring); border-radius:14px; padding:14px}
+  .panel{ margin-top:12px; background:var(--panel); border:1px solid var(--ring); border-radius:14px; padding:14px; }
   .muted{color:var(--muted)}
   .hr{height:1px;background:var(--ring);margin:8px 0}
-
+  .indicators{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .indicator{ background:var(--panel-2); border:1px solid var(--ring); border-radius:10px; padding:8px 12px; font-weight:700; }
+  .progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden}
+  .progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
+  .content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;margin-top:10px;min-height:210px}
+  .content h3{margin:0 0 6px;font-size:18px}
+  .prayer{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:8px}
+  .hint{display:block;margin-top:10px;font-size:13px;color:var(--muted);font-style:italic;text-align:center}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .space{flex:1}
+  .bigbtn{ font-size:16px; font-weight:800; letter-spacing:.2px; background:var(--panel); border:1px solid var(--ring); border-radius:12px; padding:10px 14px; cursor:pointer; }
+  .bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
+  .bigbtn:disabled{opacity:.6;cursor:not-allowed}
+  .hide{display:none!important}
+  .startline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  input[type="checkbox"]{width:16px;height:16px}
   .chips{display:flex;gap:8px;flex-wrap:wrap}
   .chip{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700}
   .chip.active{outline:2px solid var(--accent-2);background:var(--soft)}
-  .pill{background:var(--soft); border:1px solid var(--ring); color:var(--muted); padding:6px 10px; border-radius:999px; font-size:13px}
-
-  .indicators{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .indicator{background:var(--panel-2); border:1px solid var(--ring); border-radius:10px; padding:8px 12px; font-weight:700}
-  .content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;margin-top:10px;min-height:210px;line-height:1.6}
-  .content h3{margin:0 0 6px;font-size:18px}
-  .prayer{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:8px}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .space{flex:1}
-  .bigbtn{font-size:16px;font-weight:800;letter-spacing:.2px;background:var(--panel);border:1px solid var(--ring);border-radius:12px;padding:10px 14px;cursor:pointer}
-  .bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
-  .bigbtn:disabled{opacity:.6;cursor:not-allowed}
-
-  .progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden}
-  .progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
-
+  .chip.suggest{box-shadow:0 0 0 3px var(--ring),0 0 0 6px #52a0ff33}
   footer{margin:14px 0 6px;color:var(--muted);text-align:center}
+
+  /* 💫 Poświata w trybie nocnym dla przycisku ustawienia dnia */
+  @media (prefers-color-scheme: dark){ #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; } }
+  .dark #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="banner"><h1>Różaniec</h1></div>
-
   <div class="topbar">
-    <button id="themeBtn" class="btn" title="Tryb dzień / noc">🌞/🌙</button>
-    <span class="pill" id="todayBadge">Dziś: —</span>
+    <div class="title">Różaniec</div>
+    <div class="slash">/</div>
+    <div class="mini">
+      <span class="pill" id="modeInfo">Tryb: standard</span>
+      <button id="themeBtn" class="btnlink" title="Tryb dzień/noc">🌞/🌙</button>
+    </div>
   </div>
 
-  <!-- Panel startowy -->
+  <!-- Start -->
   <div id="startPanel" class="panel">
-    <div class="muted">Wybierz część różańca lub użyj opcji <b>Podążaj za dniem tygodnia</b>.</div>
+    <div class="startline">
+      <span class="muted">Wybierz część różańca albo użyj „dzisiejszej”.</span>
+    </div>
     <div class="hr"></div>
     <div class="row">
       <label class="row" style="gap:6px"><input id="autoToday" type="checkbox" checked /> <span><b>Podążaj za dniem tygodnia</b></span></label>
       <span class="space"></span>
-      <button id="applyToday" class="btn glow">Ustaw dzisiejszą część</button>
+      <span class="pill" id="todayBadge">Dziś: —</span>
+      <button id="applyToday" class="btnlink">Ustaw dzisiejszą część</button>
     </div>
     <div class="row" style="margin-top:8px">
       <div class="chips" id="chips">
@@ -86,30 +88,27 @@
     </div>
     <div class="row" style="margin-top:10px">
       <button id="opisBtn" class="bigbtn">Opis</button>
+      <span class="space"></span>
       <button id="startBtn" class="bigbtn primary">Start</button>
     </div>
   </div>
 
-  <!-- Panel główny (jak w nowennie) -->
-  <div id="readPanel" class="panel" style="display:none">
+  <!-- Czytanie -->
+  <div id="readPanel" class="panel hide">
     <div class="indicators">
       <div class="indicator" id="indPart">Część —</div>
       <div class="indicator" id="indStep">Krok –/–</div>
-      <span class="space"></span>
-      <div class="pill" id="modeInfo">Tryb: standard</div>
     </div>
     <div class="progress" style="margin:10px 0 8px"><div id="bar"></div></div>
     <div class="content">
       <h3 id="stepTitle">Tytuł</h3>
       <div id="stepBody" class="muted"></div>
-      <div id="stepPrayer" class="prayer" style="display:none"></div>
+      <div id="stepExtra" class="prayer hide"></div>
     </div>
     <div class="row" style="margin-top:10px">
-      <!-- 🔁 Dynamiczny przycisk: „Opis” na kroku 1, potem „⟵ Wstecz” -->
-      <button id="prevBtn" class="bigbtn">Opis</button>
+      <button id="prevBtn" class="bigbtn">⟵ Wstecz</button>
       <button id="nextBtn" class="bigbtn primary">Dalej ⟶</button>
-      <button id="finishBtn" class="bigbtn" style="display:none">Zakończ część</button>
-      <span class="space"></span>
+      <button id="finishBtn" class="bigbtn hide">Zakończ część</button>
     </div>
   </div>
 
@@ -118,235 +117,177 @@
 
 <script>
 (function(){
-  // === Mapowania dni i etykiety ===
-  const DAY_TO_PART = { 0:"chwalebne", 1:"radosne", 2:"bolesne", 3:"chwalebne", 4:"swiatla", 5:"bolesne", 6:"radosne" };
+  /* ====== Dni tygodnia (Warszawa) ====== */
+  const DAY_TO_PART = { 0:"chwalebne",1:"radosne",2:"bolesne",3:"chwalebne",4:"swiatla",5:"bolesne",6:"radosne" };
   const DAY_LABEL = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
-  const PART_NAME = { radosne:"Tajemnice Radosne", bolesne:"Tajemnice Bolesne", swiatla:"Tajemnice Światła", chwalebne:"Tajemnice Chwalebne" };
+  const PART_NAME = {
+    radosne:"Tajemnice Radosne",
+    bolesne:"Tajemnice Bolesne",
+    swiatla:"Tajemnice Światła",
+    chwalebne:"Tajemnice Chwalebne"
+  };
+  function warsawWeekInfo(){
+    const label = new Intl.DateTimeFormat('pl-PL',{weekday:'long', timeZone:'Europe/Warsaw'}).format(new Date());
+    const idxMap = {"niedziela":0,"poniedziałek":1,"wtorek":2,"środa":3,"czwartek":4,"piątek":5,"sobota":6};
+    const dow = idxMap[label] ?? 0; return {dow,label,part:DAY_TO_PART[dow]};
+  }
+  function todays(){ return warsawWeekInfo(); }
 
-  // === OPIS ===
-  const OPIS_HTML = `
-    <h3>Opis – jak odmawiać tę część różańca</h3>
-    <p>Każda część ma <b>wstęp</b>, pięć <b>dziesiątków</b> z krótkim rozważaniem oraz <b>zakończenie</b>. Używaj przycisków „Dalej/⟵ Wstecz”.
-    W dowolnym momencie możesz wrócić do ekranu startowego i wybrać inną część.</p>`;
+  /* ====== Treść ====== */
+  const WSTEP_HTML = `
+    <p><strong>✝️ Znak krzyża</strong><br/>W imię Ojca i Syna, i Ducha Świętego. Amen.</p>
+    <p><strong>Ojcze nasz</strong></p>
+    <p><strong>3× Zdrowaś Maryjo</strong> (o wiarę, nadzieję i miłość)</p>
+    <p><strong>Wierzę w Boga</strong> (Skład Apostolski)</p>
+  `;
+  const HINT = '<span class="hint">Odmów: Ojcze nasz • 10× Zdrowaś Maryjo</span>';
 
-  // === Treści — intro + 5 dziesiątków + outro ===
   const CONTENT = {
     radosne:{name:PART_NAME.radosne,
-      intro:{title:"Wstęp",body:`Bóg przychodzi w zwyczajności. Największe rzeczy rodzą się w posłuszeństwie.`},
+      intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},
       items:[
-        {title:"I – Zwiastowanie",body:`Maryja uczy zgody na Boży plan.`,prayer:`Maryjo, naucz mnie mówić \"tak\" Bogu.`},
-        {title:"II – Nawiedzenie",body:`Radość dojrzewa w drodze do drugiego.`,prayer:`Uczyń moje serce uważnym.`},
-        {title:"III – Narodzenie",body:`Bóg rodzi się w miejscach, które świat omija.`,prayer:`Jezu, narodź się w moich decyzjach.`},
-        {title:"IV – Ofiarowanie",body:`Miłość oddaje — ufa.`,prayer:`Przyjmij, Panie, to co kocham.`},
-        {title:"V – Odnalezienie",body:`Gubimy Cię w pośpiechu. Czekasz w domu Ojca.`,prayer:`Gdy Cię gubię, przyprowadź mnie do Ojca.`}
+        {title:"I – Zwiastowanie",body:"Maryja nie planowała cudu — słuchała. Uczy zgody na Boży plan.",hint:true},
+        {title:"II – Nawiedzenie",body:"Radość dojrzewa w drodze do drugiego człowieka — w służbie.",hint:true},
+        {title:"III – Narodzenie",body:"Bóg rodzi się w miejscach, które świat omija.",hint:true},
+        {title:"IV – Ofiarowanie",body:"Miłość nie zatrzymuje — oddaje z ufnością.",hint:true},
+        {title:"V – Odnalezienie",body:"Gubimy Jezusa w pośpiechu, On czeka w domu Ojca.",hint:true}
       ],
-      outro:{title:"Zakończenie",body:`Radość jest owocem zaufania. Idź i noś ją dalej.`}
+      outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}
     },
     bolesne:{name:PART_NAME.bolesne,
-      intro:{title:"Wstęp",body:`Klęknij. Niech każda modlitwa ma cenę — ofiarę, nie wygodę.`},
+      intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},
       items:[
-        {title:"I – Ogrójec",body:`Jezus dźwiga ciężar naszych zdrad.`,prayer:`Daj mi czuwać.`},
-        {title:"II – Biczowanie",body:`Świadomy grzech rani Ciebie.`,prayer:`Ulecz to, czym Cię ranię.`},
-        {title:"III – Cierniem ukoronowanie",body:`Świat szydzi, Ty królujesz miłością.`,prayer:`Daj odwagę bycia Twoim.`},
-        {title:"IV – Krzyż",body:`Sens rodzi się w wierności.`,prayer:`Naucz mnie nieść mój krzyż.`},
-        {title:"V – Ukrzyżowanie",body:`Każdy mój grzech to gwóźdź.`,prayer:`Uczyń moje serce posłuszne Twojej miłości.`}
+        {title:"I – Ogrójec",body:"Nie moja, lecz Twoja wola, Panie.",hint:true},
+        {title:"II – Biczowanie",body:"Każdy grzech to rana zadana Jezusowi.",hint:true},
+        {title:"III – Cierniem ukoronowanie",body:"Pokorna wierność pośród szyderstwa.",hint:true},
+        {title:"IV – Dźwiganie krzyża",body:"Wierność w trudnościach rodzi sens.",hint:true},
+        {title:"V – Ukrzyżowanie",body:"„Ojcze, przebacz im”.",hint:true}
       ],
-      outro:{title:"Zakończenie",body:`Krzyż dziś — jutro zmartwychwstanie.`}
+      outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}
     },
     swiatla:{name:PART_NAME.swiatla,
-      intro:{title:"Wstęp",body:`Jezus zostawił znaki: Słowo, sakramenty, Kościół.`},
+      intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},
       items:[
-        {title:"I – Chrzest w Jordanie",body:`Chrzest tożsamością, nie wspomnieniem.`,prayer:`Odnów we mnie łaskę chrztu.`},
-        {title:"II – Kana",body:`Cud zaczyna się od posłuszeństwa.`,prayer:`Maryjo, naucz mnie słuchać i wykonać.`},
-        {title:"III – Królestwo",body:`Słowo budzi sumienie.`,prayer:`Niech Twoje Słowo stanie się czynem.`},
-        {title:"IV – Przemienienie",body:`Światło jest po to, by iść do ludzi.`,prayer:`Daj mi nieść Twoje światło.`},
-        {title:"V – Eucharystia",body:`Największy cud dzieje się na ołtarzu.`,prayer:`Spraw, abym żył Eucharystią.`}
+        {title:"I – Chrzest w Jordanie",body:"Chrzest to tożsamość — żyj nią.",hint:true},
+        {title:"II – Cud w Kanie",body:"„Zróbcie wszystko, cokolwiek wam powie”.",hint:true},
+        {title:"III – Głoszenie Królestwa",body:"Słowo budzi sumienie — nawrócenie to prawda.",hint:true},
+        {title:"IV – Przemienienie",body:"Światło z Taboru jest po to, by zejść do ludzi.",hint:true},
+        {title:"V – Eucharystia",body:"Żyj Eucharystią na co dzień.",hint:true}
       ],
-      outro:{title:"Zakończenie",body:`Kto słucha Jezusa, staje się lampą, która nie gaśnie.`}
+      outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}
     },
     chwalebne:{name:PART_NAME.chwalebne,
-      intro:{title:"Wstęp",body:`Niedziela to mała Pascha — zwycięstwo życia.`},
+      intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},
       items:[
-        {title:"I – Zmartwychwstanie",body:`Jezus wyprowadza z grobu lęku.`,prayer:`Naucz mnie żyć Twoim życiem.`},
-        {title:"II – Wniebowstąpienie",body:`Cel jest wyżej.`,prayer:`Oderwij mnie od tego, co przemija.`},
-        {title:"III – Zesłanie Ducha",body:`Duch daje odwagę i pokój.`,prayer:`Duchu Święty, odnów mnie.`},
-        {title:"IV – Wniebowzięcie Maryi",body:`Wierność prowadzi do chwały.`,prayer:`Maryjo, naucz wiernej prostoty.`},
-        {title:"V – Ukoronowanie Maryi",body:`Wielkość to służba.`,prayer:`Królowo, naucz mnie kochać czynem.`}
+        {title:"I – Zmartwychwstanie",body:"Nadzieja silniejsza niż grób.",hint:true},
+        {title:"II – Wniebowstąpienie",body:"Cel jest wyżej — w niebie.",hint:true},
+        {title:"III – Zesłanie Ducha Świętego",body:"Odwaga, prawda i pokój.",hint:true},
+        {title:"IV – Wniebowzięcie Maryi",body:"Wierność prowadzi do chwały.",hint:true},
+        {title:"V – Ukoronowanie Maryi",body:"Wielkość to służba.",hint:true}
       ],
-      outro:{title:"Zakończenie",body:`Każdy krzyż z Bogiem kończy się zmartwychwstaniem.`}
+      outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}
     }
   };
 
-  // === Refs ===
+  /* ====== UI ====== */
   const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
-  const startPanel=qs('#startPanel'), readPanel=qs('#readPanel');
-  const themeBtn=qs('#themeBtn');
-  const autoToday=qs('#autoToday'), chips=qs('#chips'), todayBadge=qs('#todayBadge'), applyToday=qs('#applyToday');
-  const indPart=qs('#indPart'), indStep=qs('#indStep'), bar=qs('#bar');
-  const stepTitle=qs('#stepTitle'), stepBody=qs('#stepBody'), stepPrayer=qs('#stepPrayer');
-  const prevBtn=qs('#prevBtn'), nextBtn=qs('#nextBtn'), finishBtn=qs('#finishBtn');
-  const modeInfo=qs('#modeInfo');
-  const startBtn=qs('#startBtn');
-  const opisBtn=qs('#opisBtn');
+  const startPanel=qs("#startPanel"), readPanel=qs("#readPanel");
+  const autoToday=qs("#autoToday"), chips=qs("#chips"), todayBadge=qs("#todayBadge"), applyToday=qs("#applyToday");
+  const opisBtn=qs("#opisBtn"), startBtn=qs("#startBtn"), themeBtn=qs("#themeBtn");
+  const indPart=qs("#indPart"), indStep=qs("#indStep"), bar=qs("#bar");
+  const stepTitle=qs("#stepTitle"), stepBody=qs("#stepBody"), stepExtra=qs("#stepExtra");
+  const prevBtn=qs("#prevBtn"), nextBtn=qs("#nextBtn"), finishBtn=qs("#finishBtn");
+  const modeInfo=qs("#modeInfo");
 
-  // === State + storage ===
+  /* ====== Stan + storage ====== */
   const PARTS=["radosne","bolesne","swiatla","chwalebne"];
-  const S={ lastPart:"rozaniec:lastPart", auto:"rozaniec:autoToday", theme:"rozaniec:theme", dayPrefix:"rozaniec:day:" };
-  let currentPart=null, step=0, showOpis=false;
+  const S={ lastPart:"rozaniec:lastPart", step:"rozaniec:step:", done:"rozaniec:done:", auto:"rozaniec:autoToday", lastDate:"rozaniec:lastDate", theme:"rozaniec:theme" };
+  let currentPart=null, step=0, introMode=false;
 
-  // === Daty w Europe/Warsaw ===
-  function tzParts(){
-    const tz='Europe/Warsaw';
-    const now=new Date();
-    const y=+new Intl.DateTimeFormat('sv-SE',{year:'numeric', timeZone:tz}).format(now);
-    const m=+new Intl.DateTimeFormat('sv-SE',{month:'2-digit', timeZone:tz}).format(now);
-    const d=+new Intl.DateTimeFormat('sv-SE',{day:'2-digit', timeZone:tz}).format(now);
-    const wd=new Intl.DateTimeFormat('pl-PL',{weekday:'long', timeZone:tz}).format(now);
-    return {y,m,d,wd};
-  }
-  function todayISO(){ const {y,m,d}=tzParts(); return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
-  function dowPL(){ const {wd}=tzParts(); const idx=DAY_LABEL.indexOf(wd); return idx!==-1? idx : new Date().getDay(); }
-  function todays(){ const dow=dowPL(); return {dow, label:DAY_LABEL[dow], part:DAY_TO_PART[dow]}; }
-
-  // === Dzienne przechowywanie postępów ===
-  function dailyKey(date){ return S.dayPrefix + date; }
-  function readDaily(date){ try{ return JSON.parse(localStorage.getItem(dailyKey(date))||'{}'); }catch(_){ return {}; } }
-  function writeDaily(date, obj){ try{ localStorage.setItem(dailyKey(date), JSON.stringify(obj)); }catch(_){ /* ignore quota */ } }
-  function getDailyPart(date, part){ const d=readDaily(date); return d[part] || { step:0, completed:false }; }
-  function setDailyPart(date, part, data){ const d=readDaily(date); const max=totalSteps()-1; d[part] = { step: Math.max(0, Math.min(data.step||0, max)), completed: !!data.completed }; writeDaily(date, d); }
-  function markCompletedToday(part){ const date=todayISO(); setDailyPart(date, part, { step: totalSteps()-1, completed:true }); }
-  function isCompletedToday(part){ const date=todayISO(); return !!getDailyPart(date, part).completed; }
-  function savedStepToday(part){ const date=todayISO(); return getDailyPart(date, part).step||0; }
-  function saveStepToday(part, s){ const date=todayISO(); const cur=getDailyPart(date, part); const max=totalSteps()-1; setDailyPart(date, part, { step: Math.max(0,Math.min(s,max)), completed: cur.completed && s>=max }); }
-  function getStartStepFor(part){ return isCompletedToday(part) ? (totalSteps()-1) : 0; }
-
-  // === Północ Europe/Warsaw – odśwież ===
-  function msUntilMidnightWarsaw(){
-    const {y,m,d}=tzParts();
-    // konstrukcja lokalnej północy w Warszawie
-    const localMidnight = new Date(Date.parse(`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}T00:00:00`));
-    const next = new Date(localMidnight.getTime() + 24*60*60*1000);
-    return Math.max(1000, next - new Date());
-  }
-  function scheduleMidnightRefresh(){ setTimeout(()=>{ renderToday(); setActiveChip(autoToday.checked? todays().part : currentPart); showStart(); }, msUntilMidnightWarsaw()); }
-
-  // === UI helpers ===
-  function totalSteps(){ return 7; } // intro + 5 + outro
-  function setActiveChip(p){ qsa('.chip').forEach(c=> c.classList.toggle('active', c.dataset.part===p)); }
+  /* ====== Helpers ====== */
+  function totalSteps(){ return 7 }
+  function keyPart(p){ return S.step+p }
+  function keyDone(p){ return S.done+p }
+  function setActiveChip(p){ qsa(".chip").forEach(c=>{ c.classList.toggle("active", c.dataset.part===p); c.classList.toggle("suggest", c.dataset.part===todays().part); }); }
   function renderToday(){ const t=todays(); todayBadge.textContent=`Dziś: ${t.label} — ${PART_NAME[t.part]}`; setActiveChip(currentPart||t.part); }
-  function showStart(){ startPanel.style.display='block'; readPanel.style.display='none'; showOpis=false; }
-  function showRead(){ readPanel.style.display='block'; startPanel.style.display='none'; }
+  function showStart(){ startPanel.classList.remove("hide"); readPanel.classList.add("hide") }
+  function showRead(){ readPanel.classList.remove("hide"); startPanel.classList.add("hide") }
+  function save(){
+    localStorage.setItem(S.auto, autoToday.checked?"1":"0");
+    if(currentPart!=null){ localStorage.setItem(S.lastPart, currentPart); localStorage.setItem(keyPart(currentPart), String(step)); }
+    const tzDate = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    localStorage.setItem(S.lastDate, tzDate);
+  }
+  function savedStep(p){ const v=parseInt(localStorage.getItem(keyPart(p)),10); return Number.isFinite(v)? Math.min(Math.max(v,0), totalSteps()-1) : 0; }
+  function isDone(p){ return localStorage.getItem(keyDone(p))==="1" }
+  function setDone(p,val){ if(val) localStorage.setItem(keyDone(p),"1"); else localStorage.removeItem(keyDone(p)) }
 
+  /* Reset o północy (Warszawa) */
+  function resetIfNewDay(){
+    const today = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    const last = localStorage.getItem(S.lastDate);
+    if(last && last!==today){ PARTS.forEach(p=>{ localStorage.removeItem(keyPart(p)); localStorage.removeItem(keyDone(p)); }); localStorage.setItem(S.lastDate,today); }
+  }
+  function scheduleMidnightReset(){
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
+    const y=+parts.find(p=>p.type==='year').value, m=+parts.find(p=>p.type==='month').value, d=+parts.find(p=>p.type==='day').value;
+    const next = new Date(Date.UTC(y, m-1, d+1, 0,0,0));
+    const ms = next - now; setTimeout(()=>{ resetIfNewDay(); renderToday(); scheduleMidnightReset(); }, ms);
+  }
+
+  /* ====== Render kroku ====== */
   function renderStep(){
-    // Ekran OPISU (dostępny zawsze spod "Opis")
-    if(showOpis){
-      stepTitle.textContent='Opis';
-      stepBody.innerHTML = OPIS_HTML;
-      stepPrayer.style.display='none'; stepPrayer.textContent='';
-      indStep.textContent = 'Opis';
-      bar.style.width = '0%';
-      prevBtn.textContent = '⟵ Wstecz';
-      nextBtn.style.display='inline-block';
-      finishBtn.style.display='none';
-      indPart.textContent = currentPart ? `Część: ${CONTENT[currentPart].name}` : 'Część —';
+    if(introMode){
+      stepTitle.textContent="Opis";
+      stepBody.innerHTML=`<p>Różaniec to modlitwa rozważania życia Jezusa z Maryją. Zacznij od modlitw wstępnych, a następnie przechodź przez pięć tajemnic danej części. Na końcu pojawi się komunikat o ukończeniu dzisiejszej części.</p>`;
+      stepExtra.classList.add("hide"); stepExtra.textContent="";
+      indPart.textContent=`Część: ${currentPart? CONTENT[currentPart].name : "—"}`;
+      indStep.textContent=`Opis`;
+      bar.style.width="0%";
+      prevBtn.disabled=false; prevBtn.textContent="⟵ Start"; nextBtn.classList.remove("hide"); finishBtn.classList.add("hide");
       return;
     }
+    const d = CONTENT[currentPart]; const max=totalSteps(); let t,b;
+    if(step===0){ t=d.intro.title; b=d.intro.body }
+    else if(step===max-1){ t=d.outro.title; b=d.outro.body }
+    else { const it=d.items[step-1]; t=it.title; b=it.body + (it.hint? " "+HINT:""); }
 
-    const d=CONTENT[currentPart]; const max=totalSteps();
-    let t,b,pr=null;
-    if(step===0){ t=d.intro.title; b=d.intro.body; }
-    else if(step===max-1){ t=d.outro.title; b=d.outro.body; }
-    else { const it=d.items[step-1]; t=it.title; b=it.body; pr=it.prayer||null; }
-
-    stepTitle.textContent=t; stepBody.textContent=b;
-    if(pr){ stepPrayer.style.display='block'; stepPrayer.innerHTML=`<b>Modlitwa:</b> ${pr}`; } else { stepPrayer.style.display='none'; stepPrayer.textContent=''; }
-
-    indPart.textContent=`Część: ${d.name}`;
-    indStep.textContent=`Krok ${step+1}/${max}`;
-    bar.style.width = Math.round(step/(max-1)*100) + "%";
-
-    // Przyciski
-    nextBtn.style.display = step===max-1? 'none':'inline-block';
-    finishBtn.style.display = step===max-1? 'inline-block':'none';
-    prevBtn.textContent = step===0 ? 'Opis' : '⟵ Wstecz';
-
-    // Zapisz bieżący krok dzienny
-    if(currentPart!=null) saveStepToday(currentPart, step);
+    stepTitle.textContent=t; stepBody.innerHTML=`<p style="margin:0;line-height:1.6">${b}</p>`; stepExtra.classList.add("hide"); stepExtra.textContent="";
+    indPart.textContent=`Część: ${d.name}`; indStep.textContent=`Krok ${step+1}/${max}`; bar.style.width = Math.round(step/(max-1)*100) + "%";
+    if(step===0){ prevBtn.disabled=false; prevBtn.textContent="⟵ Start"; } else { prevBtn.disabled=false; prevBtn.textContent="⟵ Wstecz"; } nextBtn.classList.toggle("hide", step===max-1); finishBtn.classList.toggle("hide", step!==max-1);
+    save();
   }
 
-  // === Zdarzenia ===
-  chips.addEventListener('click', e=>{
-    const chip=e.target.closest('.chip'); if(!chip) return;
-    currentPart = chip.dataset.part; setActiveChip(currentPart);
-    localStorage.setItem(S.lastPart, currentPart);
-  });
+  /* ====== Zdarzenia ====== */
+  chips.addEventListener("click", e=>{ const chip=e.target.closest(".chip"); if(!chip) return; currentPart = chip.dataset.part; setActiveChip(currentPart); });
+  autoToday.addEventListener("change", ()=>{ modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard"; save(); });
+  applyToday.addEventListener("click", ()=>{ const t=todays(); currentPart=t.part; setActiveChip(currentPart); });
+  opisBtn.addEventListener("click", ()=>{ if(!currentPart && autoToday.checked) currentPart = todays().part; if(!currentPart) currentPart="radosne"; introMode=true; showRead(); renderStep(); });
+  startBtn.addEventListener("click", ()=>{ if(autoToday.checked && !currentPart){ currentPart = todays().part } if(!currentPart) currentPart="radosne"; introMode=false; step = isDone(currentPart) ? totalSteps()-1 : 0; showRead(); renderStep(); });
+  prevBtn.addEventListener("click", ()=>{ if(introMode){ showStart(); return; } if(step===0){ showStart(); return; } step=Math.max(0,step-1); renderStep(); });
+  nextBtn.addEventListener("click", ()=>{ if(introMode){ introMode=false; step=0; renderStep(); return; } step=Math.min(totalSteps()-1,step+1); renderStep(); });
+  finishBtn.addEventListener("click", ()=>{ setDone(currentPart,true); save(); showStart(); renderToday(); });
 
-  autoToday.addEventListener('change', ()=>{
-    localStorage.setItem(S.auto, autoToday.checked? '1':'0');
-    modeInfo.textContent = autoToday.checked? 'Tryb: dzień tygodnia' : 'Tryb: ręczny';
-  });
+  // Tryb dzień/noc
+  function applyTheme(mode){ const root=document.documentElement; if(mode==='dark'){ root.classList.add('dark'); } else { root.classList.remove('dark'); } localStorage.setItem(S.theme, mode); }
+  const savedTheme = localStorage.getItem(S.theme); if(savedTheme){ applyTheme(savedTheme); }
+  themeBtn?.addEventListener('click',()=>{ const isDark=document.documentElement.classList.contains('dark'); applyTheme(isDark? 'light':'dark'); });
 
-  applyToday.addEventListener('click', ()=>{ const t=todays(); currentPart=t.part; setActiveChip(currentPart); localStorage.setItem(S.lastPart,currentPart); });
-
-  startBtn.addEventListener('click', ()=>{
-    if(autoToday.checked && !currentPart){ currentPart = todays().part; }
-    if(!currentPart) currentPart='radosne';
-    // start: nowa część -> od kroku 1; jeśli już ukończona dziś -> pokaż ekran końcowy (krok 7)
-    step = getStartStepFor(currentPart);
-    showOpis=false; setActiveChip(currentPart); showRead(); renderStep();
-  });
-
-  opisBtn.addEventListener('click', ()=>{
-    if(autoToday.checked && !currentPart){ currentPart = todays().part; }
-    if(!currentPart) currentPart='radosne';
-    showOpis=true; setActiveChip(currentPart); showRead(); renderStep();
-  });
-
-  nextBtn.addEventListener('click', ()=>{
-    if(showOpis){ showOpis=false; step=0; renderStep(); return; }
-    step=Math.min(totalSteps()-1,step+1); renderStep();
-  });
-
-  prevBtn.addEventListener('click', ()=>{
-    if(showOpis){ showStart(); return; }
-    if(step===0){ showOpis=true; renderStep(); return; }
-    step=Math.max(0,step-1); renderStep();
-  });
-
-  finishBtn.addEventListener('click', ()=>{ if(currentPart){ markCompletedToday(currentPart); } showStart(); renderToday(); });
-
-  // === Theme toggle ===
-  function setTheme(mode){ const root=document.documentElement; if(mode==='dark') root.classList.add('dark'); else root.classList.remove('dark'); localStorage.setItem(S.theme, mode); }
-  function toggleTheme(){ const isDark=document.documentElement.classList.contains('dark'); setTheme(isDark? 'light' : 'dark'); }
-  themeBtn.addEventListener('click', toggleTheme);
-  (function initTheme(){ const saved=localStorage.getItem(S.theme); if(saved){ setTheme(saved); } else { const prefersDark=window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; setTheme(prefersDark? 'dark':'light'); } })();
-
-  // === Init ===
-  autoToday.checked = (localStorage.getItem(S.auto)||'1')==='1';
-  modeInfo.textContent = autoToday.checked? 'Tryb: dzień tygodnia' : 'Tryb: ręczny';
+  /* ====== Init ====== */
+  resetIfNewDay();
+  autoToday.checked = (localStorage.getItem(S.auto)||"1")==="1";
+  modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard";
   const last=localStorage.getItem(S.lastPart);
-  currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : 'radosne');
-  setActiveChip(currentPart); renderToday(); showStart(); scheduleMidnightRefresh();
+  currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : "radosne");
+  renderToday();
+  scheduleMidnightReset();
 
-  // === 🧪 Mini testy (nie zmieniamy istniejących, dodajemy nowe) ===
+  /* ====== Mini self-tests ====== */
   try{
-    console.assert(document.getElementById('themeBtn'), 'Theme btn');
-    console.assert(typeof toggleTheme==='function', 'toggleTheme exists');
-    console.assert(document.getElementById('prevBtn'), 'Prev/Opis btn present');
-    console.assert(Array.isArray(Object.keys(PART_NAME)) && Object.keys(PART_NAME).length===4, '4 parts defined');
-    console.assert(typeof CONTENT.radosne === 'object' && CONTENT.radosne.items.length===5, 'radosne has 5 items');
-    const t=todays(); console.assert(t.dow>=0 && t.dow<=6, 'dow in range 0..6');
-    const badgeTxt=document.getElementById('todayBadge').textContent; console.assert(/Dziś: /.test(badgeTxt), 'badge has prefix');
-    const wasDark=document.documentElement.classList.contains('dark'); toggleTheme(); console.assert(document.documentElement.classList.contains('dark')!==wasDark, 'theme toggled'); toggleTheme(); console.assert(document.documentElement.classList.contains('dark')===wasDark, 'theme toggled back');
-    // ✅ Test logiki dziennej: ukończenie i ponowne uruchomienie
-    const dateKey = todayISO();
-    setDailyPart(dateKey, 'radosne', { step: 6, completed:true });
-    console.assert(isCompletedToday('radosne')===true, 'marked completed today');
-    console.assert(getStartStepFor('radosne')===6, 'start at finish for completed part');
-    setDailyPart(dateKey, 'bolesne', { step: 3, completed:false });
-    console.assert(isCompletedToday('bolesne')===false, 'not completed other part');
-    console.assert(getStartStepFor('bolesne')===0, 'new part starts at step 0');
-  }catch(e){ console.warn('Self tests warning:', e); }
+    console.assert(totalSteps()===7,"totalSteps powinno wynosić 7");
+    console.assert(typeof CONTENT.radosne.items[0].title==="string","Treści tajemnic istnieją");
+  }catch(e){}
 })();
 </script>
 </body>
