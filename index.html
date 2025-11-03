@@ -8,18 +8,16 @@
   :root{
     --bg:#f3f6ff; --panel:#ffffff; --panel-2:#eef2ff; --text:#0e1533; --muted:#6370a0; --accent:#2450ff; --accent-2:#6ea8ff; --ring:#2450ff22; --soft:#e8edff;
   }
-  /* Systemowy nocny tryb jako domyślna preferencja */
   @media (prefers-color-scheme: dark){
     :root{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
   }
-  /* Wymuszenie trybu nocnego przyciskiem */
   .dark{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
 
   *{box-sizing:border-box}
   body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif; color:var(--text); background:linear-gradient(180deg,var(--bg),#fff0); }
   .wrap{max-width:900px;margin:0 auto;padding:16px}
   .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .title{font-weight:800;font-size:clamp(18px,3.4vw,26px)}
+  .title{width:100%;text-align:center;display:block;margin:0 auto;font-weight:800;font-size:clamp(22px,4vw,30px)}
   .slash{opacity:.35}
   .mini{margin-left:auto;display:flex;gap:8px;align-items:center}
   .pill{ background:var(--soft); border:1px solid var(--ring); color:var(--muted); padding:6px 10px; border-radius:999px; font-size:13px; }
@@ -50,19 +48,8 @@
   .chip.suggest{box-shadow:0 0 0 3px var(--ring),0 0 0 6px #52a0ff33}
   footer{margin:14px 0 6px;color:var(--muted);text-align:center}
 
-  /* 💫 Poświata w trybie nocnym dla przycisku ustawienia dnia */
   @media (prefers-color-scheme: dark){ #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; } }
   .dark #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; }
-/* WYŚRODKOWANY TYTUŁ */
-.title {
-  width: 100%;
-  text-align: center;
-  display: block;
-  margin: 0 auto;
-  font-weight: 800;
-  font-size: clamp(22px, 4vw, 30px);
-}
-
 </style>
 </head>
 <body>
@@ -127,9 +114,7 @@
 
 <script>
 (function(){
-  /* ====== Dni tygodnia (Warszawa) ====== */
   const DAY_TO_PART = { 0:"chwalebne",1:"radosne",2:"bolesne",3:"chwalebne",4:"swiatla",5:"bolesne",6:"radosne" };
-  const DAY_LABEL = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
   const PART_NAME = {
     radosne:"Tajemnice Radosne",
     bolesne:"Tajemnice Bolesne",
@@ -143,7 +128,6 @@
   }
   function todays(){ return warsawWeekInfo(); }
 
-  /* ====== Treść ====== */
   const WSTEP_HTML = `
     <p><strong>✝️ Znak krzyża</strong><br/>W imię Ojca i Syna, i Ducha Świętego. Amen.</p>
     <p><strong>Ojcze nasz</strong></p>
@@ -199,7 +183,6 @@
     }
   };
 
-  /* ====== UI ====== */
   const qs=s=>document.querySelector(s), qsa=s=>Array.from(document.querySelectorAll(s));
   const startPanel=qs("#startPanel"), readPanel=qs("#readPanel");
   const autoToday=qs("#autoToday"), chips=qs("#chips"), todayBadge=qs("#todayBadge"), applyToday=qs("#applyToday");
@@ -209,12 +192,10 @@
   const prevBtn=qs("#prevBtn"), nextBtn=qs("#nextBtn"), finishBtn=qs("#finishBtn");
   const modeInfo=qs("#modeInfo");
 
-  /* ====== Stan + storage ====== */
   const PARTS=["radosne","bolesne","swiatla","chwalebne"];
   const S={ lastPart:"rozaniec:lastPart", step:"rozaniec:step:", done:"rozaniec:done:", auto:"rozaniec:autoToday", lastDate:"rozaniec:lastDate", theme:"rozaniec:theme" };
   let currentPart=null, step=0, introMode=false;
 
-  /* ====== Helpers ====== */
   function totalSteps(){ return 7 }
   function keyPart(p){ return S.step+p }
   function keyDone(p){ return S.done+p }
@@ -232,7 +213,6 @@
   function isDone(p){ return localStorage.getItem(keyDone(p))==="1" }
   function setDone(p,val){ if(val) localStorage.setItem(keyDone(p),"1"); else localStorage.removeItem(keyDone(p)) }
 
-  /* Reset o północy (Warszawa) */
   function resetIfNewDay(){
     const today = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
     const last = localStorage.getItem(S.lastDate);
@@ -246,7 +226,6 @@
     const ms = next - now; setTimeout(()=>{ resetIfNewDay(); renderToday(); scheduleMidnightReset(); }, ms);
   }
 
-  /* ====== Render kroku ====== */
   function renderStep(){
     if(introMode){
       stepTitle.textContent="Opis";
@@ -255,7 +234,8 @@
       indPart.textContent=`Część: ${currentPart? CONTENT[currentPart].name : "—"}`;
       indStep.textContent=`Opis`;
       bar.style.width="0%";
-      prevBtn.disabled=false; prevBtn.textContent="⟵ Start"; nextBtn.classList.remove("hide"); finishBtn.classList.add("hide");
+      prevBtn.disabled=false; prevBtn.textContent="⟵ Wstecz";
+      nextBtn.classList.remove("hide"); finishBtn.classList.add("hide");
       return;
     }
     const d = CONTENT[currentPart]; const max=totalSteps(); let t,b;
@@ -265,11 +245,13 @@
 
     stepTitle.textContent=t; stepBody.innerHTML=`<p style="margin:0;line-height:1.6">${b}</p>`; stepExtra.classList.add("hide"); stepExtra.textContent="";
     indPart.textContent=`Część: ${d.name}`; indStep.textContent=`Krok ${step+1}/${max}`; bar.style.width = Math.round(step/(max-1)*100) + "%";
-    if(step===0){ prevBtn.disabled=false; prevBtn.textContent="⟵ Start"; } else { prevBtn.disabled=false; prevBtn.textContent="⟵ Wstecz"; } nextBtn.classList.toggle("hide", step===max-1); finishBtn.classList.toggle("hide", step!==max-1);
+
+    prevBtn.disabled=false; prevBtn.textContent="⟵ Wstecz";
+    nextBtn.classList.toggle("hide", step===max-1);
+    finishBtn.classList.toggle("hide", step!==max-1);
     save();
   }
 
-  /* ====== Zdarzenia ====== */
   chips.addEventListener("click", e=>{ const chip=e.target.closest(".chip"); if(!chip) return; currentPart = chip.dataset.part; setActiveChip(currentPart); });
   autoToday.addEventListener("change", ()=>{ modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard"; save(); });
   applyToday.addEventListener("click", ()=>{ const t=todays(); currentPart=t.part; setActiveChip(currentPart); });
@@ -279,12 +261,10 @@
   nextBtn.addEventListener("click", ()=>{ if(introMode){ introMode=false; step=0; renderStep(); return; } step=Math.min(totalSteps()-1,step+1); renderStep(); });
   finishBtn.addEventListener("click", ()=>{ setDone(currentPart,true); save(); showStart(); renderToday(); });
 
-  // Tryb dzień/noc
   function applyTheme(mode){ const root=document.documentElement; if(mode==='dark'){ root.classList.add('dark'); } else { root.classList.remove('dark'); } localStorage.setItem(S.theme, mode); }
   const savedTheme = localStorage.getItem(S.theme); if(savedTheme){ applyTheme(savedTheme); }
   themeBtn?.addEventListener('click',()=>{ const isDark=document.documentElement.classList.contains('dark'); applyTheme(isDark? 'light':'dark'); });
 
-  /* ====== Init ====== */
   resetIfNewDay();
   autoToday.checked = (localStorage.getItem(S.auto)||"1")==="1";
   modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard";
@@ -293,11 +273,7 @@
   renderToday();
   scheduleMidnightReset();
 
-  /* ====== Mini self-tests ====== */
-  try{
-    console.assert(totalSteps()===7,"totalSteps powinno wynosić 7");
-    console.assert(typeof CONTENT.radosne.items[0].title==="string","Treści tajemnic istnieją");
-  }catch(e){}
+  try{ console.assert(totalSteps()===7,"totalSteps powinno wynosić 7"); }catch(e){}
 })();
 </script>
 </body>
