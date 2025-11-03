@@ -5,17 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Różaniec — interaktywnie</title>
 <style>
+/* --- Maryjny schemat kolorów --- */
 :root {
-  --bg: #dce8ff;         /* jasny błękit tła */
-  --panel: #f6f9ff;      /* lekka biel z niebieskim tonem */
-  --panel-2: #e4edff;    /* delikatny odcień wewnętrznych paneli */
-  --text: #0e1533;       /* granatowy tekst */
-  --muted: #5a6aa0;      /* stonowany błękitny opis */
-  --accent: #2450ff;     /* główny niebieski */
-  --accent-2: #6ea8ff;   /* jasny akcent */
-  --ring: #2450ff22;
-  --soft: #edf3ff;
+  --bg: #dce8ff;        /* jasny błękit tła (dzień) */
+  --panel: #f6f9ff;     /* karta/panel – jasna biel z tonem niebieskim */
+  --panel-2: #e4edff;   /* wewnętrzne pudełka/pola */
+  --text: #0e1533;      /* granatowy tekst */
+  --muted: #5a6aa0;     /* stonowany opis */
+  --accent: #2450ff;    /* niebieski akcent */
+  --accent-2: #6ea8ff;  /* jaśniejszy akcent/gradient */
+  --ring: #2450ff22;    /* obrysy/linie */
+  --soft: #edf3ff;      /* miękkie tła np. „hinty” */
 }
+
+/* Tryb nocny – głęboki, nie czarny, z lekką poświatą */
+.dark {
+  --bg: #0e1633;        /* tło – ciemny błękit */
+  --panel: #161f3f;     /* karty */
+  --panel-2: #1d2754;   /* wewnętrzne pudełka */
+  --text: #e8edff;      /* jasny tekst */
+  --muted: #a7baf0;     /* opisy */
+  --accent: #5c82ff;    /* akcent nocny */
+  --accent-2: #7faaff;  /* jaśniejszy akcent */
+  --ring: #6ea8ff33;    /* obrysy */
+  --soft: #202c5a;      /* miękkie tła (noc) */
+}
+
+/* Jeśli chcesz subtelny „niebiański” gradient na całej stronie: */
+body{
+  background: linear-gradient(180deg, var(--bg), rgba(255,255,255,0));
+}
+
+/* A wewnętrzne pudełko może mieć delikatny panelowy gradient: */
+.wrap{
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+}
+
 
   @media (prefers-color-scheme: dark){
     :root{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
