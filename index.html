@@ -4,215 +4,117 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Różaniec — interaktywnie</title>
+
+<!-- Android/Chrome: stabilne kolory i brak auto-dark -->
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#dce8ff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1633" media="(prefers-color-scheme: dark)">
+
 <style>
-/* --- Maryjny schemat kolorów --- */
-:root {
-  --bg: #dce8ff;        /* jasny błękit tła (dzień) */
-  --panel: #f6f9ff;     /* karta/panel – jasna biel z tonem niebieskim */
-  --panel-2: #e4edff;   /* wewnętrzne pudełka/pola */
-  --text: #0e1533;      /* granatowy tekst */
-  --muted: #5a6aa0;     /* stonowany opis */
-  --accent: #2450ff;    /* niebieski akcent */
-  --accent-2: #6ea8ff;  /* jaśniejszy akcent/gradient */
-  --ring: #2450ff22;    /* obrysy/linie */
-  --soft: #edf3ff;      /* miękkie tła np. „hinty” */
+/* --- Reset i bezpieczne ustawienia --- */
+*{box-sizing:border-box; -webkit-text-size-adjust:100%;}
+html,body{margin:0;padding:0}
+body{font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, sans-serif; color:var(--text); background:var(--bg); background-image:linear-gradient(180deg, var(--bg), rgba(255,255,255,0));}
+
+/* --- Maryjny schemat kolorów (DZIEŃ / NOC sterowane klasą .dark) --- */
+:root{
+  --bg:#dce8ff; --panel:#f6f9ff; --panel-2:#e4edff; --text:#0e1533; --muted:#5a6aa0; --accent:#2450ff; --accent-2:#6ea8ff; --ring:#2450ff22; --soft:#edf3ff;
+}
+.dark{
+  --bg:#0e1633; --panel:#161f3f; --panel-2:#1d2754; --text:#e8edff; --muted:#a7baf0; --accent:#5c82ff; --accent-2:#7faaff; --ring:#6ea8ff33; --soft:#202c5a;
 }
 
-/* Tryb nocny – głęboki, nie czarny, z lekką poświatą */
-.dark {
-  --bg: #0e1633;        /* tło – ciemny błękit */
-  --panel: #161f3f;     /* karty */
-  --panel-2: #1d2754;   /* wewnętrzne pudełka */
-  --text: #e8edff;      /* jasny tekst */
-  --muted: #a7baf0;     /* opisy */
-  --accent: #5c82ff;    /* akcent nocny */
-  --accent-2: #7faaff;  /* jaśniejszy akcent */
-  --ring: #6ea8ff33;    /* obrysy */
-  --soft: #202c5a;      /* miękkie tła (noc) */
-}
-
-/* Jeśli chcesz subtelny „niebiański” gradient na całej stronie: */
-body{
-  background: linear-gradient(180deg, var(--bg), rgba(255,255,255,0));
-}
-
-/* A wewnętrzne pudełko może mieć delikatny panelowy gradient: */
-.wrap{
-  background: linear-gradient(180deg, var(--panel), var(--panel-2));
-}
-
-
-  @media (prefers-color-scheme: dark){
-    :root{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
-  }
-  .dark{ --bg:#0f1221; --panel:#161a2f; --panel-2:#1a1f3a; --text:#e8edff; --muted:#a7b1e6; --accent:#8ea0ff; --accent-2:#6ea8ff; --ring:#8ea0ff33; --soft:#20264a; }
-
-  *{box-sizing:border-box}
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial, sans-serif;
-  color: var(--text);
-  background: var(--bg);
-}
-.wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 16px;
-  background: linear-gradient(180deg, var(--bg), var(--panel-2));
-  border-radius: 20px;
-  box-shadow: 0 0 20px #0003;
-}
+/* --- Layout --- */
+.wrap{max-width:900px;margin:0 auto;padding:16px; background:linear-gradient(180deg, var(--panel), var(--panel-2)); border-radius:20px; box-shadow:0 0 20px #0003}
 
 /* 🔵 Baner tytułu Różaniec */
-header.book {
-  background: #cce5ff;
-  color: #000033;
-  text-align: center;
-  padding: 20px;
-  border-radius: 20px 20px 0 0;
-  font-size: clamp(22px, 4vw, 30px);
-  font-weight: 800;
-  box-shadow: 0 2px 8px #0002;
-}
+header.book{background:#cce5ff;color:#000033;text-align:center;padding:20px;border-radius:20px 20px 0 0;font-size:clamp(22px,4vw,30px);font-weight:800;box-shadow:0 2px 8px #0002}
+header.book + .topbar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:8px}
 
-header.book + .topbar {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
+/* Topbar i przyciski */
+.topbar{background:linear-gradient(180deg,#dbe8ff 0%,#f3f6ff 100%);border-radius:14px;padding:12px 16px;box-shadow:0 2px 6px #2450ff22}
+.dark .topbar{background:linear-gradient(180deg,#1a1f3a 0%, #0f1221 100%); box-shadow:0 0 10px #4f7fff33}
+#themeBtn{border:1px solid var(--ring);background:var(--panel);border-radius:12px;padding:8px 14px;cursor:pointer;font-weight:700}
+.pill{background:var(--soft);border:1px solid var(--ring);color:var(--muted);padding:6px 10px;border-radius:999px;font-size:13px}
+.btnlink{border:1px solid var(--ring);background:var(--panel);padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700}
 
-#themeBtn {
-  border: 1px solid var(--ring);
-  background: var(--panel);
-  border-radius: 12px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-weight: 700;
-}
+/* Tytuł z delikatnym blaskiem */
+.title{width:100%;text-align:center;display:block;margin:0 auto 10px auto;font-weight:800;font-size:clamp(22px,4vw,30px);color:var(--text);text-shadow:0 0 6px rgba(100,150,255,.5), 0 0 12px rgba(150,200,255,.3)}
 
-/* Dalej masz już:
-.topbar{display:flex;align-items:center;gap:10px;...}
+/* Karty/sekcje */
+.panel{margin-top:12px;background:var(--panel);border:1px solid var(--ring);border-radius:14px;padding:14px}
+.muted{color:var(--muted)}
+.hr{height:1px;background:var(--ring);margin:8px 0}
 
-  .topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .title{width:100%;text-align:center;display:block;margin:0 auto;font-weight:800;font-size:clamp(22px,4vw,30px)}
-  /* ✨ Delikatny maryjny blask pod tytułem Różaniec */
-.title {
-  width: 100%;
-  text-align: center;
-  display: block;
-  margin: 0 auto 10px auto;
-  font-weight: 800;
-  font-size: clamp(22px, 4vw, 30px);
-  color: var(--text);
-  text-shadow: 0 0 6px rgba(100, 150, 255, 0.5), 0 0 12px rgba(150, 200, 255, 0.3);
-}
+/* Chipy wyboru części */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700}
+.chip.active{outline:2px solid var(--accent-2);background:var(--soft)}
+.chip.suggest{box-shadow:0 0 0 3px var(--ring), 0 0 0 6px #52a0ff33}
 
-  .slash{opacity:.35}
-  .mini{margin-left:auto;display:flex;gap:8px;align-items:center}
-  .pill{ background:var(--soft); border:1px solid var(--ring); color:var(--muted); padding:6px 10px; border-radius:999px; font-size:13px; }
-  .btnlink{ border:1px solid var(--ring); background:var(--panel); padding:6px 10px; border-radius:10px; cursor:pointer; font-weight:700; }
+/* Indykatory, progress i treść */
+.indicators{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.indicator{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 12px;font-weight:700}
+.progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden}
+.progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
+.content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;margin-top:10px;min-height:210px}
+.content h3{margin:0 0 6px;font-size:18px}
+.prayer{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:8px}
+.hint{display:block;margin-top:10px;font-size:13px;color:var(--muted);font-style:italic;text-align:center}
 
-  .panel{ margin-top:12px; background:var(--panel); border:1px solid var(--ring); border-radius:14px; padding:14px; }
-  .muted{color:var(--muted)}
-  .hr{height:1px;background:var(--ring);margin:8px 0}
-  .indicators{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .indicator{ background:var(--panel-2); border:1px solid var(--ring); border-radius:10px; padding:8px 12px; font-weight:700; }
-  .progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden}
-  .progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
-  .content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;margin-top:10px;min-height:210px}
-  .content h3{margin:0 0 6px;font-size:18px}
-  .prayer{margin-top:10px;padding:10px;border-left:4px solid var(--accent);background:var(--soft);border-radius:8px}
-  .hint{display:block;margin-top:10px;font-size:13px;color:var(--muted);font-style:italic;text-align:center}
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .space{flex:1}
-  .bigbtn{ font-size:16px; font-weight:800; letter-spacing:.2px; background:var(--panel); border:1px solid var(--ring); border-radius:12px; padding:10px 14px; cursor:pointer; }
-  .bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
-  .bigbtn:disabled{opacity:.6;cursor:not-allowed}
-  .hide{display:none!important}
-  .startline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  input[type="checkbox"]{width:16px;height:16px}
-  .chips{display:flex;gap:8px;flex-wrap:wrap}
-  .chip{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700}
-  .chip.active{outline:2px solid var(--accent-2);background:var(--soft)}
-  .chip.suggest{box-shadow:0 0 0 3px var(--ring),0 0 0 6px #52a0ff33}
-  footer{margin:14px 0 6px;color:var(--muted);text-align:center}
+/* Układ przycisków */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.space{flex:1}
+.bigbtn{font-size:16px;font-weight:800;letter-spacing:.2px;background:var(--panel);border:1px solid var(--ring);border-radius:12px;padding:10px 14px;cursor:pointer}
+.bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
+.bigbtn:disabled{opacity:.6;cursor:not-allowed}
 
-  @media (prefers-color-scheme: dark){ #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; } }
-  .dark #applyToday{ box-shadow:0 0 0 3px #3a55ff33, 0 0 18px #4f7fff55; border-color:#3a55ff66; text-shadow:0 0 6px #7fa7ff; }
-  /* Poprawiona widoczność przycisków w trybie nocnym */
-.dark .btnlink, 
-.dark .bigbtn {
-  color: #ffffff !important;
-  border-color: #6ea8ff !important;
-  background: #1a1f3a !important;
-}
+/* Poprawiona widoczność w trybie nocnym */
+.dark .btnlink, .dark .bigbtn{color:#fff!important;border-color:#6ea8ff!important;background:#1a1f3a!important}
+.dark #applyToday{background:#1e2450!important;color:#fff!important;box-shadow:0 0 0 3px #3a55ff33, 0 0 12px #4f7fff66;border-color:#6ea8ff!important}
+.dark #opisBtn{background:#1e2450!important;color:#fff!important;border-color:#6ea8ff!important;box-shadow:0 0 8px #4f7fff55}
 
-.dark #applyToday {
-  background: #1e2450 !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 0 3px #3a55ff33, 0 0 12px #4f7fff66;
-  border-color: #6ea8ff !important;
-}
-
-.dark #opisBtn {
-  background: #1e2450 !important;
-  color: #ffffff !important;
-  border-color: #6ea8ff !important;
-  box-shadow: 0 0 8px #4f7fff55;
-}
-/* 🌅 Maryjny gradient pod nagłówkiem "Różaniec" */
-.topbar {
-  background: linear-gradient(180deg, #dbe8ff 0%, #f3f6ff 100%);
-  border-radius: 14px;
-  padding: 12px 16px;
-  box-shadow: 0 2px 6px #2450ff22;
-}
-
-/* W trybie nocnym – delikatny granatowy połysk */
-.dark .topbar {
-  background: linear-gradient(180deg, #1a1f3a 0%, #0f1221 100%);
-  box-shadow: 0 0 10px #4f7fff33;
-}
-
+.hide{display:none!important}
+footer{margin:14px 0 6px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="book">Różaniec</header>
-<div class="topbar">
-  <button id="themeBtn" title="Tryb dzień/noc">🌞/🌙</button>
-</div>
-
+  <header class="book">Różaniec</header>
+  <div class="topbar">
+    <button id="themeBtn" title="Tryb dzień/noc">🌞/🌙</button>
+    <span class="pill" id="modeInfo">Tryb: dzień tygodnia</span>
+  </div>
 
   <!-- Start -->
-  <div id="startPanel" class="panel">
-    <div class="startline">
+  <div id="startPanel" class="panel" role="region" aria-label="Wybór części różańca">
+    <div class="row">
       <span class="muted">Wybierz część różańca albo użyj „dzisiejszej”.</span>
     </div>
-    <div class="hr"></div>
+    <div class="hr" aria-hidden="true"></div>
     <div class="row">
-      <input id="autoToday" type="checkbox" checked style="display:none" />
+      <input id="autoToday" type="checkbox" checked style="display:none" aria-hidden="true" />
       <span class="space"></span>
       <span class="pill" id="todayBadge">Dziś: —</span>
-      <button id="applyToday" class="btnlink">Ustaw dzisiejszą część</button>
+      <button id="applyToday" class="btnlink" type="button">Ustaw dzisiejszą część</button>
     </div>
     <div class="row" style="margin-top:8px">
-      <div class="chips" id="chips">
-        <div class="chip" data-part="radosne">Radosne (pon/sob)</div>
-        <div class="chip" data-part="bolesne">Bolesne (wt/pt)</div>
-        <div class="chip" data-part="swiatla">Światła (czw)</div>
-        <div class="chip" data-part="chwalebne">Chwalebne (śr/nd)</div>
+      <div class="chips" id="chips" role="tablist" aria-label="Części różańca">
+        <div class="chip" data-part="radosne" role="tab" tabindex="0">Radosne (pon/sob)</div>
+        <div class="chip" data-part="bolesne" role="tab" tabindex="0">Bolesne (wt/pt)</div>
+        <div class="chip" data-part="swiatla" role="tab" tabindex="0">Światła (czw)</div>
+        <div class="chip" data-part="chwalebne" role="tab" tabindex="0">Chwalebne (śr/nd)</div>
       </div>
     </div>
     <div class="row" style="margin-top:10px">
-      <button id="opisBtn" class="bigbtn">Opis</button>
+      <button id="opisBtn" class="bigbtn" type="button">Opis</button>
       <span class="space"></span>
-      <button id="startBtn" class="bigbtn primary">Start</button>
+      <button id="startBtn" class="bigbtn primary" type="button">Start</button>
     </div>
   </div>
 
   <!-- Czytanie -->
-  <div id="readPanel" class="panel hide">
+  <div id="readPanel" class="panel hide" role="region" aria-live="polite" aria-label="Treść rozważań">
     <div class="indicators">
       <div class="indicator" id="indPart">Część —</div>
       <div class="indicator" id="indStep">Krok –/–</div>
@@ -224,9 +126,9 @@ header.book + .topbar {
       <div id="stepExtra" class="prayer hide"></div>
     </div>
     <div class="row" style="margin-top:10px">
-      <button id="prevBtn" class="bigbtn">⟵ Wstecz</button>
-      <button id="nextBtn" class="bigbtn primary">Dalej ⟶</button>
-      <button id="finishBtn" class="bigbtn hide">Zakończ część</button>
+      <button id="prevBtn" class="bigbtn" type="button">⟵ Wstecz</button>
+      <button id="nextBtn" class="bigbtn primary" type="button">Dalej ⟶</button>
+      <button id="finishBtn" class="bigbtn hide" type="button">Zakończ część</button>
     </div>
   </div>
 
@@ -344,7 +246,7 @@ header.book + .topbar {
     const parts = new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(now);
     const y=+parts.find(p=>p.type==='year').value, m=+parts.find(p=>p.type==='month').value, d=+parts.find(p=>p.type==='day').value;
     const next = new Date(Date.UTC(y, m-1, d+1, 0,0,0));
-    const ms = next - now; setTimeout(()=>{ resetIfNewDay(); renderToday(); scheduleMidnightReset(); }, ms);
+    const ms = next - now; setTimeout(()=>{ resetIfNewDay(); renderToday(); scheduleMidnightReset(); }, Math.max(1000, ms));
   }
 
   function renderStep(){
@@ -374,7 +276,8 @@ header.book + .topbar {
   }
 
   chips.addEventListener("click", e=>{ const chip=e.target.closest(".chip"); if(!chip) return; currentPart = chip.dataset.part; setActiveChip(currentPart); });
-  autoToday.addEventListener("change", ()=>{ modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard"; save(); });
+  chips.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ const chip=e.target.closest(".chip"); if(!chip) return; currentPart=chip.dataset.part; setActiveChip(currentPart); e.preventDefault(); }});
+  autoToday.addEventListener("change", ()=>{ if(modeInfo) modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard"; save(); });
   applyToday.addEventListener("click", ()=>{ const t=todays(); currentPart=t.part; setActiveChip(currentPart); });
   opisBtn.addEventListener("click", ()=>{ if(!currentPart && autoToday.checked) currentPart = todays().part; if(!currentPart) currentPart="radosne"; introMode=true; showRead(); renderStep(); });
   startBtn.addEventListener("click", ()=>{ if(autoToday.checked && !currentPart){ currentPart = todays().part } if(!currentPart) currentPart="radosne"; introMode=false; step = isDone(currentPart) ? totalSteps()-1 : 0; showRead(); renderStep(); });
@@ -388,7 +291,7 @@ header.book + .topbar {
 
   resetIfNewDay();
   autoToday.checked = true; localStorage.setItem(S.auto,"1");
-  modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard";
+  if(modeInfo) modeInfo.textContent = autoToday.checked? "Tryb: dzień tygodnia" : "Tryb: standard";
   const last=localStorage.getItem(S.lastPart);
   currentPart = PARTS.includes(last)? last : (autoToday.checked? todays().part : "radosne");
   renderToday();
