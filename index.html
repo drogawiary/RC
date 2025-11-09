@@ -5,63 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Różaniec — interaktywnie</title>
 
-
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#dce8ff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1633" media="(prefers-color-scheme: dark)">
-
+<!-- Stały tryb nocny / Android-friendly colors -->
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e1633">
 
 <style>
 *{box-sizing:border-box;-webkit-text-size-adjust:100%}
 html,body{margin:0;padding:0}
 body{font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);background-image:linear-gradient(180deg,var(--bg),rgba(255,255,255,0))}
-:root{--bg:#dce8ff;--panel:#f6f9ff;--panel-2:#e4edff;--text:#0e1533;--muted:#5a6aa0;--accent:#2450ff;--accent-2:#6ea8ff;--ring:#2450ff22;--soft:#edf3ff}
-.dark{--bg:#0e1633;--panel:#161f3f;--panel-2:#1d2754;--text:#e8edff;--muted:#a7baf0;--accent:#5c82ff;--accent-2:#7faaff;--ring:#6ea8ff33;--soft:#202c5a}
+:root{--bg:#0e1633;--panel:#161f3f;--panel-2:#1d2754;--text:#e8edff;--muted:#a7baf0;--accent:#5c82ff;--accent-2:#7faaff;--ring:#6ea8ff33;--soft:#202c5a}
 .wrap{max-width:900px;margin:0 auto;padding:16px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border-radius:20px;box-shadow:0 0 20px #0003}
-header.book{
-background: linear-gradient(145deg,#0b3d91,#1565c0,#1e88e5);
-color: #fff;
-text-align: center;
-padding: 32px 20px;
-border-radius: 20px 20px 0 0;
-font-size: clamp(28px, 5vw, 40px);
-font-family: 'Playfair Display', serif;
-text-shadow: 0 0 8px #fff, 0 0 16px #a8c8ff;
-box-shadow: inset 0 0 10px #ffffff22, 0 2px 8px #0002;
-font-weight: 800;
-}
+header.book{background:linear-gradient(145deg,#0b3d91,#1565c0,#1e88e5);color:#fff;text-align:center;padding:32px 20px;border-radius:20px 20px 0 0;font-size:clamp(28px,5vw,40px);font-family:'Playfair Display',serif;text-shadow:0 0 8px #fff,0 0 16px #a8c8ff;box-shadow:inset 0 0 10px #ffffff22,0 2px 8px #0002;font-weight:800}
 header.book+.topbar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center}
-.topbar{background:linear-gradient(180deg,#dbe8ff 0%,#f3f6ff 100%);border-radius:14px;padding:12px 16px;box-shadow:0 2px 6px #2450ff22}
-.dark .topbar{background:linear-gradient(180deg,#131833 0%,#0a0d1e 100%);box-shadow:0 0 10px #4f7fff55}
-#themeBtn{border:1px solid var(--ring);background:var(--panel);border-radius:12px;padding:8px 14px;cursor:pointer;font-weight:700;color:var(--text)}
-.btnlink{border:1px solid var(--ring);background:var(--panel);padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700;color:var(--text)}
+.topbar{background:linear-gradient(180deg,#131833 0%,#0a0d1e 100%);border-radius:14px;padding:12px 16px;box-shadow:0 0 10px #4f7fff55}
+.btnlink{border:1px solid var(--ring);background:var(--panel);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:700;color:var(--text)}
+.bigbtn{font-size:16px;font-weight:800;letter-spacing:.2px;background:var(--panel);border:1px solid var(--ring);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--text);transition:box-shadow .25s, transform .15s}
+.bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
+.bigbtn.active{box-shadow:0 0 0 3px #4f7fff33,0 0 18px 2px var(--accent-2);transform:scale(1.02)}
 .panel{margin-top:12px;background:var(--panel);border:1px solid var(--ring);border-radius:14px;padding:14px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
 .chip{background:var(--panel-2);border:1px solid var(--ring);border-radius:10px;padding:8px 10px;cursor:pointer;font-weight:700;color:var(--text)}
 .chip.active{outline:2px solid var(--accent-2);background:var(--soft)}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .space{flex:1}
-.bigbtn{font-size:16px;font-weight:800;letter-spacing:.2px;background:var(--panel);border:1px solid var(--ring);border-radius:12px;padding:10px 14px;cursor:pointer;color:var(--text);transition:box-shadow .25s, transform .15s}
-.bigbtn.active{box-shadow:0 0 0 3px #4f7fff33,0 0 18px 2px var(--accent-2);transform:scale(1.02)}
-.bigbtn.primary{background:var(--accent);color:#fff;border-color:transparent}
 .hide{display:none!important}
 footer{margin:14px 0 6px;color:var(--muted);text-align:center}
 .hint{display:block;margin-top:10px;font-size:13px;color:var(--muted);font-style:italic;text-align:center}
 .progress{height:10px;background:var(--panel-2);border:1px solid var(--ring);border-radius:999px;overflow:hidden;margin:10px 0 8px}
 .progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .3s}
-.dark .btnlink,.dark .bigbtn{color:#e8edff!important;background:#1a1f3a!important;border-color:#6ea8ff!important}
-.dark .chip{color:#e8edff;background:#1d2754;border-color:#6ea8ff33}
-.dark .chip.active{background:#202c5a;outline:2px solid var(--accent-2)}
-.dark #themeBtn{color:#e8edff}
+/* Czytelność długich treści */
+.content{background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;min-height:210px;max-height:70vh;overflow-y:auto}
+blockquote{margin:0 0 8px;padding:8px 12px;border-left:3px solid var(--accent-2);background:#ffffff10;border-radius:8px}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="book">Różaniec</header>
-<div class="topbar">
-<button id="themeBtn" title="Tryb dzień/noc">🌞/🌙</button>
-<button id="applyToday" class="btnlink" type="button">Ustaw dzisiejszą część</button>
-</div>
+  <header class="book">Różaniec</header>
+  <div class="topbar">
+    <button id="applyToday" class="btnlink" type="button">Ustaw dzisiejszą część</button>
+    <button id="startBtn" class="bigbtn primary" type="button">Start</button>
+  </div>
 
   <!-- Start -->
   <div id="startPanel" class="panel" role="region" aria-label="Wybór części różańca">
@@ -75,16 +58,14 @@ footer{margin:14px 0 6px;color:var(--muted);text-align:center}
     </div>
     <div class="row" style="margin-top:10px">
       <button id="introBtn" class="bigbtn" type="button">Wprowadzenie</button>
-      <button id="endBtn" class="bigbtn" type="button">Zakończenie</button>
-      <span class="space"></span>
-      <button id="startBtn" class="bigbtn primary" type="button">Start</button>
+      <button id="endBtn" class="bigbtn" type="button">Dziękczynienie</button>
     </div>
   </div>
 
   <!-- Czytanie -->
   <div id="readPanel" class="panel hide" role="region" aria-live="polite" aria-label="Treść rozważań">
     <div class="progress"><div id="bar"></div></div>
-    <div class="content" style="background:var(--panel-2);border:1px solid var(--ring);border-radius:14px;padding:14px;min-height:210px">
+    <div class="content">
       <h3 id="stepTitle" style="margin:0 0 6px;font-size:18px">Tytuł</h3>
       <div id="stepBody" class="muted"></div>
     </div>
@@ -95,13 +76,10 @@ footer{margin:14px 0 6px;color:var(--muted);text-align:center}
     </div>
   </div>
 
-<footer>
-  Różaniec — cztery części. ✝️ © 2025 
-  <a href="https://drogawiary.github.io/" style="color:inherit;text-decoration:none;font-weight:600;">
-    drogawiary@wp.pl
-  </a>
-</footer>
-
+  <footer>
+    Różaniec — cztery części. ✝️ © 2025 
+    <a href="https://drogawiary.github.io/" style="color:inherit;text-decoration:none;font-weight:600;">drogawiary@wp.pl</a>
+  </footer>
 </div>
 
 <script>
@@ -110,7 +88,7 @@ footer{margin:14px 0 6px;color:var(--muted);text-align:center}
   const DAY_TO_PART={0:"chwalebne",1:"radosne",2:"bolesne",3:"chwalebne",4:"swiatla",5:"bolesne",6:"radosne"};
   const PART_NAME={radosne:"Tajemnice Radosne",bolesne:"Tajemnice Bolesne",swiatla:"Tajemnice Światła",chwalebne:"Tajemnice Chwalebne"};
   const PARTS=["radosne","bolesne","swiatla","chwalebne"];
-  const S={ step:"rozaniec:step:", done:"rozaniec:done:", lastDate:"rozaniec:lastDate", lastPart:"rozaniec:lastPart", theme:"rozaniec:theme" };
+  const S={ step:"rozaniec:step:", done:"rozaniec:done:", lastDate:"rozaniec:lastDate", lastPart:"rozaniec:lastPart" };
 
   // ===== Narzędzia czasu/pamięci =====
   function warsawDate(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
@@ -130,32 +108,40 @@ footer{margin:14px 0 6px;color:var(--muted);text-align:center}
   const HINT='<span class="hint">Odmów: Ojcze nasz • 10× Zdrowaś Maryjo</span>';
   const CONTENT={
     radosne:{name:PART_NAME.radosne,intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},items:[
-      {title:"I – Zwiastowanie",body:"Maryja nie planowała cudu — słuchała. Uczy zgody na Boży plan.",hint:true},
-      {title:"II – Nawiedzenie",body:"Radość dojrzewa w drodze do drugiego człowieka — w służbie.",hint:true},
-      {title:"III – Narodzenie",body:"Bóg rodzi się w miejscach, które świat omija.",hint:true},
-      {title:"IV – Ofiarowanie",body:"Miłość nie zatrzymuje — oddaje z ufnością.",hint:true},
-      {title:"V – Odnalezienie",body:"Gubimy Jezusa w pośpiechu, On czeka w domu Ojca.",hint:true}
+      {title:"I – Zwiastowanie",body:`<blockquote><strong>„Oto ja służebnica Pańska, niech mi się stanie według słowa Twojego.”</strong><br><em>(Łk 1,38)</em></blockquote>
+<p>Maryja przyjmuje wolę Boga z ufnością — to najpiękniejsza chwila w Jej życiu, gdy Słowo staje się ciałem. A my: czy potrafimy powiedzieć Bogu „niech się stanie”, nawet gdy nie wszystko rozumiemy?</p>`,hint:true},
+      {title:"II – Nawiedzenie",body:`<blockquote><strong>„Błogosławiona jesteś, któraś uwierzyła, że spełnią się słowa powiedziane Ci od Pana.”</strong><br><em>(Łk 1,45)</em></blockquote>
+<p>Maryja niesie Boga drugiemu człowiekowi i budzi radość wiary w domu Elżbiety. A my: czy potrafimy zanieść Ewangelię w zwykłej codzienności — słowem, gestem, obecnością?</p>`,hint:true},
+      {title:"III – Narodzenie",body:`<blockquote><strong>„Porodziła swego pierworodnego Syna, owinęła Go w pieluszki i położyła w żłobie.”</strong><br><em>(Łk 2,7)</em></blockquote>
+<p>Bóg przychodzi w prostocie i ubóstwie, nie szuka pałacu — szuka serca. Czy w moim sercu jest dla Niego miejsce, gdy przychodzi po cichu?</p>`,hint:true},
+      {title:"IV – Ofiarowanie",body:`<blockquote><strong>„Moje oczy ujrzały Twoje zbawienie, które przygotowałeś wobec wszystkich narodów.”</strong><br><em>(Łk 2,30–31)</em></blockquote>
+<p>Symeon rozpoznaje w Dzieciątku Zbawiciela; Maryja uczy, że miłość potrafi oddać to, co najcenniejsze. Czy ja umiem ofiarować Bogu moje plany i lęki?</p>`,hint:true},
+      {title:"V – Odnalezienie",body:`<blockquote><strong>„Czemuście Mnie szukali? Czy nie wiedzieliście, że powinienem być w tym, co należy do mego Ojca?”</strong><br><em>(Łk 2,49)</em></blockquote>
+<p>Maryja i Józef odnajdują Jezusa w świątyni. A my — czy potrafimy odnaleźć Go <strong>w naszych świątyniach</strong>: w Eucharystii, w ciszy modlitwy, we wspólnocie? Kto szuka z sercem, ten odnajdzie.</p>`,hint:true}
     ],outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}},
+
     bolesne:{name:PART_NAME.bolesne,intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},items:[
-      {title:"I – Ogrójec",body:"Nie moja, lecz Twoja wola, Panie.",hint:true},
-      {title:"II – Biczowanie",body:"Każdy grzech to rana zadana Jezusowi.",hint:true},
-      {title:"III – Cierniem ukoronowanie",body:"Pokorna wierność pośród szyderstwa.",hint:true},
-      {title:"IV – Dźwiganie krzyża",body:"Wierność w trudnościach rodzi sens.",hint:true},
-      {title:"V – Ukrzyżowanie",body:"„Ojcze, przebacz im”.",hint:true}
+      {title:"I – Modlitwa Jezusa w Ogrójcu",body:`<blockquote><strong>„Ojcze, jeśli chcesz, zabierz ode Mnie ten kielich! Jednak nie moja wola, lecz Twoja niech się stanie.”</strong><br><em>(Łk 22,42)</em></blockquote><p>Jezus modli się w samotności, zmagając z lękiem i bólem. Nie ucieka — ufa Ojcu. Czy ja w chwilach trudu też potrafię powiedzieć: „Nie moja, lecz Twoja wola, Panie”?</p>`,hint:true},
+      {title:"II – Biczowanie Pana Jezusa",body:`<blockquote><strong>„Wtedy Piłat wziął Jezusa i kazał Go ubiczować.”</strong><br><em>(J 19,1)</em></blockquote><p>Każdy grzech rani Serce Jezusa. On przyjmuje cierpienie w milczeniu, z miłości do nas. Czy mam świadomość, że moje słabości też pozostawiają ślad na Jego ciele?</p>`,hint:true},
+      {title:"III – Cierniem ukoronowanie",body:`<blockquote><strong>„A uplótłszy koronę z cierni, włożyli Mu ją na głowę.”</strong><br><em>(J 19,2)</em></blockquote><p>Ludzie szydzą, a On milczy. Pokorna wierność Jezusa w upokorzeniu uczy nas, że prawdziwa chwała rodzi się z pokory. Czy potrafię milczeć, gdy jestem niesprawiedliwie oceniany?</p>`,hint:true},
+      {title:"IV – Dźwiganie krzyża",body:`<blockquote><strong>„A On sam dźwigał krzyż na miejsce zwane Czaszką.”</strong><br><em>(J 19,17)</em></blockquote><p>Jezus niesie krzyż aż na Golgotę — krok po kroku, w milczeniu, z miłości. Na tej drodze spotyka cierpienie, ale też ludzkie serca, które pomagają Mu nieść ciężar. Czy ja pomagam nieść cudze krzyże, czy tylko unikam własnych?</p>`,hint:true},
+      {title:"V – Ukrzyżowanie i śmierć Jezusa",body:`<blockquote><strong>„Ojcze, przebacz im, bo nie wiedzą, co czynią.”</strong><br><em>(Łk 23,34)</em></blockquote><p>Z krzyża płynie przebaczenie — dla wszystkich, którzy ranią. Miłość Jezusa nie zna granic, nawet w chwili śmierci. Czy ja potrafię przebaczyć tym, którzy mnie skrzywdzili?</p>`,hint:true}
     ],outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}},
+
     swiatla:{name:PART_NAME.swiatla,intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},items:[
-      {title:"I – Chrzest w Jordanie",body:"Chrzest to tożsamość — żyj nią.",hint:true},
-      {title:"II – Cud w Kanie",body:"„Zróbcie wszystko, cokolwiek wam powie”.",hint:true},
-      {title:"III – Głoszenie Królestwa",body:"Słowo budzi sumienie — nawrócenie to prawda.",hint:true},
-      {title:"IV – Przemienienie",body:"Światło z Taboru jest po to, by zejść do ludzi.",hint:true},
-      {title:"V – Eucharystia",body:"Żyj Eucharystią na co dzień.",hint:true}
+      {title:"I – Chrzest Jezusa w Jordanie",body:`<blockquote><strong>„Tyś jest mój Syn umiłowany, w Tobie mam upodobanie.”</strong><br><em>(Łk 3,22)</em></blockquote><p>Jezus wchodzi do wody nie dlatego, że potrzebuje oczyszczenia, ale by uświęcić nasze życie. Czy pamiętam o łasce mojego chrztu – o dniu, w którym Bóg nazwał mnie swoim dzieckiem?</p>`,hint:true},
+      {title:"II – Cud w Kanie Galilejskiej",body:`<blockquote><strong>„Zróbcie wszystko, cokolwiek wam powie.”</strong><br><em>(J 2,5)</em></blockquote><p>Maryja wskazuje na Jezusa – to Ona pierwsza uczy zaufania. Czy słucham głosu Boga w moim życiu, czy raczej chcę, by to On słuchał mnie?</p>`,hint:true},
+      {title:"III – Głoszenie Królestwa Bożego",body:`<blockquote><strong>„Czas się wypełnił i bliskie jest królestwo Boże. Nawracajcie się i wierzcie w Ewangelię.”</strong><br><em>(Mk 1,15)</em></blockquote><p>Jezus przynosi Dobrą Nowinę – mówi o miłosierdziu, prawdzie i przebaczeniu. Czy pozwalam, by Jego słowo naprawdę zmieniało moje życie?</p>`,hint:true},
+      {title:"IV – Przemienienie na Górze Tabor",body:`<blockquote><strong>„To jest mój Syn umiłowany, Jego słuchajcie!”</strong><br><em>(Mk 9,7)</em></blockquote><p>Uczniowie widzą Jezusa w chwale – na chwilę dotykają nieba. Czy potrafię słuchać Jezusa w ciszy serca, nie tylko wtedy, gdy dzieją się cuda?</p>`,hint:true},
+      {title:"V – Ustanowienie Eucharystii",body:`<blockquote><strong>„To jest Ciało moje, które za was będzie wydane.”</strong><br><em>(Łk 22,19)</em></blockquote><p>W Eucharystii Jezus daje siebie cały. Czy rozumiem, że Komunia to nie symbol, ale prawdziwe spotkanie Boga z człowiekiem?</p>`,hint:true}
     ],outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}},
+
     chwalebne:{name:PART_NAME.chwalebne,intro:{title:"Modlitwy wstępne",body:WSTEP_HTML},items:[
-      {title:"I – Zmartwychwstanie",body:"Nadzieja silniejsza niż grób.",hint:true},
-      {title:"II – Wniebowstąpienie",body:"Cel jest wyżej — w niebie.",hint:true},
-      {title:"III – Zesłanie Ducha Świętego",body:"Odwaga, prawda i pokój.",hint:true},
-      {title:"IV – Wniebowzięcie Maryi",body:"Wierność prowadzi do chwały.",hint:true},
-      {title:"V – Ukoronowanie Maryi",body:"Wielkość to służba.",hint:true}
+      {title:"I – Zmartwychwstanie Jezusa",body:`<blockquote><strong>„Dlaczego szukacie żyjącego wśród umarłych? Nie ma Go tu – zmartwychwstał.”</strong><br><em>(Łk 24,5–6)</em></blockquote><p>Zmartwychwstanie to zwycięstwo miłości nad śmiercią. Czy wierzę, że Bóg może ożywić to, co w moim życiu umarło?</p>`,hint:true},
+      {title:"II – Wniebowstąpienie",body:`<blockquote><strong>„A oto Ja jestem z wami przez wszystkie dni, aż do skończenia świata.”</strong><br><em>(Mt 28,20)</em></blockquote><p>Jezus odchodzi do Ojca, ale nie zostawia nas samych. Czy wierzę, że Jego obecność jest bliżej niż myślę?</p>`,hint:true},
+      {title:"III – Zesłanie Ducha Świętego",body:`<blockquote><strong>„I wszyscy zostali napełnieni Duchem Świętym.”</strong><br><em>(Dz 2,4)</em></blockquote><p>Duch Święty przemienia serca uczniów i daje im odwagę. Czy modlę się o Ducha Świętego w moim codziennym życiu?</p>`,hint:true},
+      {title:"IV – Wniebowzięcie Najświętszej Maryi Panny",body:`<blockquote><strong>„Błogosławiona jesteś, Maryjo, bo uwierzyłaś, że spełnią się słowa powiedziane Ci od Pana.”</strong><br><em>(Łk 1,45)</em></blockquote><p>Maryja zostaje wzięta do nieba – to znak nadziei dla wszystkich wierzących. Czy moje życie prowadzi ku niebu?</p>`,hint:true},
+      {title:"V – Ukoronowanie Maryi na Królową nieba i ziemi",body:`<blockquote><strong>„Wielbi dusza moja Pana, bo wejrzał na uniżenie swojej służebnicy.”</strong><br><em>(Łk 1,46–48)</em></blockquote><p>Maryja króluje nie z tronu, ale z serca pełnego pokory. Czy ja potrafię służyć, jak Ona – z radością i bez oczekiwania chwały?</p>`,hint:true}
     ],outro:{title:"Ukończyłeś dzisiaj tę część różańca",body:"Możesz wrócić i wybrać inną część."}}
   };
 
@@ -166,7 +152,6 @@ footer{margin:14px 0 6px;color:var(--muted);text-align:center}
   const introBtn=qs('#introBtn');
   const endBtn=qs('#endBtn');
   const startBtn=qs('#startBtn');
-  const themeBtn=qs('#themeBtn');
   const startPanel=qs('#startPanel');
   const readPanel=qs('#readPanel');
   const stepTitle=qs('#stepTitle');
@@ -294,7 +279,6 @@ Nie musisz być święty, żeby się modlić – ale modlitwa może cię uczyni�
       if(bar) bar.style.width='100%';
       return;
     }
-
     let d=CONTENT[currentPart];
     if(!d){ currentPart='radosne'; d=CONTENT[currentPart]; }
 
@@ -305,7 +289,7 @@ Nie musisz być święty, żeby się modlić – ale modlitwa może cię uczyni�
     else { const it=d.items[step-1]; title=it.title; body=it.body + (it.hint? ' '+HINT : ''); }
 
     stepTitle.textContent=title;
-    stepBody.innerHTML=`<p style="margin:0;line-height:1.6">${body}</p>`;
+    stepBody.innerHTML=body;
 
     // zapis postępu + pasek
     saveStep(currentPart, step);
@@ -321,22 +305,16 @@ Nie musisz być święty, żeby się modlić – ale modlitwa może cię uczyni�
   chips.addEventListener('click',e=>{ const c=e.target.closest('.chip'); if(!c) return; currentPart=c.dataset.part; rememberPart(currentPart); step = isDone(currentPart) ? totalSteps()-1 : savedStep(currentPart); setActiveChip(); });
   chips.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ const c=e.target.closest('.chip'); if(!c) return; currentPart=c.dataset.part; rememberPart(currentPart); step = isDone(currentPart) ? totalSteps()-1 : savedStep(currentPart); setActiveChip(); e.preventDefault(); }});
 
-applyToday.addEventListener('click',()=>{
-  const t = todays();
-  currentPart = t.part;
-  rememberPart(currentPart);
-  step = isDone(currentPart) ? totalSteps()-1 : savedStep(currentPart);
-  setActiveChip();
-
-  // nowość: jeśli jesteś we Wprowadzeniu/Zakończeniu lub w czytaniu,
-  // wróć do ekranu startowego już z ustawioną dzisiejszą częścią
-  introMode = false;
-  endMode = false;
-  showStart();
-});
-
-  introBtn.addEventListener('click',()=>{ introMode=true; endMode=false; introBtn.classList.add('active'); endBtn.classList.remove('active'); showRead(); renderStep(); });
-  endBtn.addEventListener('click',()=>{ endMode=true; introMode=false; endBtn.classList.add('active'); introBtn.classList.remove('active'); showRead(); renderStep(); });
+  applyToday.addEventListener('click',()=>{
+    const t = todays();
+    currentPart = t.part;
+    rememberPart(currentPart);
+    step = isDone(currentPart) ? totalSteps()-1 : savedStep(currentPart);
+    setActiveChip();
+    introMode = false;
+    endMode = false;
+    showStart();
+  });
 
   startBtn.addEventListener('click',()=>{
     introMode=false; endMode=false; introBtn.classList.remove('active'); endBtn.classList.remove('active');
@@ -347,24 +325,20 @@ applyToday.addEventListener('click',()=>{
     renderStep();
   });
 
+  introBtn.addEventListener('click',()=>{ introMode=true; endMode=false; introBtn.classList.add('active'); endBtn.classList.remove('active'); showRead(); renderStep(); });
+  endBtn.addEventListener('click',()=>{ endMode=true; introMode=false; endBtn.classList.add('active'); introBtn.classList.remove('active'); showRead(); renderStep(); });
+
   prevBtn.addEventListener('click',()=>{ if(introMode||endMode){ introMode=false; endMode=false; showStart(); return; } if(step===0){ showStart(); return; } step=Math.max(0,step-1); renderStep(); });
   nextBtn.addEventListener('click',()=>{ step=Math.min(totalSteps()-1,step+1); renderStep(); });
   finishBtn.addEventListener('click',()=>{ setDone(currentPart,true); step=totalSteps()-1; saveStep(currentPart, step); rememberPart(currentPart); showStart(); setActiveChip(); });
 
-  themeBtn.addEventListener('click',()=>{ const root=document.documentElement; const isDark=root.classList.toggle('dark'); localStorage.setItem(S.theme, isDark? 'dark' : 'light'); });
-
   // ===== Inicjalizacja =====
-  const savedTheme=localStorage.getItem(S.theme); if(savedTheme==='dark'){ document.documentElement.classList.add('dark'); }
+  document.documentElement.classList.add('dark');
+  resetIfNewDay();
   const last=localStorage.getItem(S.lastPart);
   currentPart = PARTS.includes(last)? last : todays().part;
   step = isDone(currentPart) ? totalSteps()-1 : savedStep(currentPart);
   setActiveChip();
-
-  // ===== Mini testy w konsoli =====
-  try{
-    console.assert(typeof CONTENT.radosne.intro.body==='string','Intro radosne istnieje');
-    console.assert(totalSteps()===7,'totalSteps==7');
-  }catch(e){ console.warn('Test ostrzegawczy:', e); }
 })();
 </script>
 </body>
